@@ -5,7 +5,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val DarkColorPalette = darkColors(
     primary = Blue200,
@@ -43,11 +45,27 @@ fun WarbyParkerAndroidTheme(
     } else {
         LightColorPalette
     }
-
+    SystemUIControl()
     MaterialTheme(
         colors = colors,
         typography = Typography,
         shapes = Shapes,
         content = content
     )
+}
+
+@Composable
+fun SystemUIControl() {
+    // Remember a SystemUiController
+    val systemUiController = rememberSystemUiController()
+    val useDarkIcons = MaterialTheme.colors.isLight
+    val backgroundColor = MaterialTheme.colors.background
+    SideEffect {
+        // Update all of the system bar colors to be transparent, and use
+        // dark icons if we're in light theme
+        systemUiController.setSystemBarsColor(
+            color = backgroundColor,
+            darkIcons = useDarkIcons
+        )
+    }
 }
