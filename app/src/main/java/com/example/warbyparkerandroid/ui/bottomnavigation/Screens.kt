@@ -12,6 +12,7 @@ sealed class Screens(val route: String, @StringRes val resourceId: Int,  val ico
 
 enum class Route(route: String) {
     SHOP("shop"),
+    EYEGLASSES("eyeglasses"),
     FAVORITES("favorites"),
     ACCOUNT("account"),
     CART("cart")

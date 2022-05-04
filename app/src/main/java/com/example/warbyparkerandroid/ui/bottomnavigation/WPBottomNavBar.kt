@@ -27,8 +27,14 @@ fun WPBottomNavBar(navController: NavController) {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
             items.forEach { screen ->
-                val selected =
-                    currentDestination?.hierarchy?.any { it.route == screen.route } == true
+                var selected =
+                    currentDestination?.hierarchy?.any {
+                        it.route == screen.route } == true
+                if(!selected) {
+                    selected = currentDestination?.hierarchy?.any {
+                        it.route == Route.EYEGLASSES.name } == true &&
+                            (screen.route == Route.SHOP.name)
+                }
                 val tintColor = if (selected) MaterialTheme.colors.primary else Color.Gray
                 BottomNavigationItem(
                     icon = {
