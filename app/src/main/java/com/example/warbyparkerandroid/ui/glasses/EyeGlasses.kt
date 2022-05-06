@@ -1,16 +1,16 @@
 package com.example.warbyparkerandroid.ui.glasses
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,45 +29,96 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.warbyparkerandroid.R
-import com.example.warbyparkerandroid.data.datasource.AllGlasses
+import com.example.warbyparkerandroid.data.model.GlassStyle
 import com.example.warbyparkerandroid.data.model.Glasses
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Glasses(onBack: () -> Unit, glasses: List<Glasses> = AllGlasses) {
+fun Glasses(
+    onBack: () -> Unit,
+    hideBottomNav: () -> Unit,
+    showBottomNav: () -> Unit,
+    viewModel: EyeGlassesViewModel = viewModel()
+) {
     val state = rememberLazyListState()
     val firstItemVisible by remember {
         derivedStateOf {
             state.firstVisibleItemIndex == 0
         }
     }
-    Scaffold(
-        topBar = {
-            CenterTopAppBar(onBack = onBack, firstItemVisible)
-        }
-    ) {
-        LazyColumn(
-            state = state,
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            contentPadding = PaddingValues(8.dp)
-        ) {
-            item {
-                Text(
-                    text = "Eyeglasses",
-                    style = MaterialTheme.typography.h5,
-                    modifier = Modifier.padding(10.dp)
-                )
+    val modalState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmStateChange = {
+            if (it == ModalBottomSheetValue.Hidden) {
+                showBottomNav()
             }
-            items(glasses) {
-                GlassesItem(glasses = it)
+            it != ModalBottomSheetValue.HalfExpanded
+        }
+    )
+    val scope = rememberCoroutineScope()
+    val glasses by viewModel.eyeGlasses.observeAsState(initial = emptyList())
+
+    ModalBottomSheetLayout(
+        sheetState = modalState,
+        sheetContent = {
+            FiltersContent {
+                showBottomNav()
+                scope.launch { modalState.animateTo(ModalBottomSheetValue.Hidden) }
+            }
+        },
+    ) {
+        Scaffold(
+            topBar = {
+                CenterTopAppBar(firstItemVisible, onBack = onBack) {
+                    hideBottomNav()
+                    scope.launch { modalState.animateTo(ModalBottomSheetValue.Expanded) }
+                }
+            }
+        ) {
+            GlassesList(state, glasses) {
+                viewModel.update(it)
             }
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun GlassesItem(glasses: Glasses) {
+fun GlassesList(
+    state: LazyListState,
+    glasses: List<Glasses>,
+    onUpdateStyle: (style: GlassStyle) -> Unit
+) {
+    LazyColumn(
+        state = state,
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        contentPadding = PaddingValues(8.dp)
+    ) {
+        item {
+            Text(
+                text = "Eyeglasses",
+                style = MaterialTheme.typography.h5,
+                modifier = Modifier.padding(10.dp)
+            )
+        }
+        items(glasses,
+            key = { glass ->
+                glass.brand
+            }) {
+            GlassesItem(glasses = it) { style -> onUpdateStyle(style) }
+        }
+    }
+}
+
+@Composable
+fun GlassesItem(
+    glasses: Glasses,
+    onFavoriteClick: (style: GlassStyle) -> Unit
+) {
     var selectedStyle by remember { mutableStateOf(glasses.styles[0]) }
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -104,14 +156,34 @@ fun GlassesItem(glasses: Glasses) {
                     }
                 }
             }
-            val favIcon =
-                if (selectedStyle.isFavorite) R.drawable.ic_baseline_favorite_24 else R.drawable.ic_baseline_favorite_border_24
-            val tintColor = if (selectedStyle.isFavorite) Color.Red else Color.LightGray
-            IconButton(onClick = { }, modifier = Modifier.align(Alignment.TopEnd)) {
-                Icon(painterResource(id = favIcon), contentDescription = null, tint = tintColor)
+            FavoriteButton(style = selectedStyle, modifier = Modifier.align(Alignment.TopEnd)) {
+                val copy = selectedStyle.copy()
+                copy.isFavorite = !copy.isFavorite
+                selectedStyle = copy
+                onFavoriteClick(copy)
             }
         }
+    }
+}
 
+@Composable
+fun FavoriteButton(style: GlassStyle, modifier: Modifier, onSelect: () -> Unit) {
+    IconButton(onClick = { onSelect() }, modifier = modifier) {
+        Crossfade(targetState = style.isFavorite) {
+            if (it) {
+                Icon(
+                    painterResource(id = R.drawable.ic_baseline_favorite_24),
+                    contentDescription = null,
+                    tint = Color.Red
+                )
+            } else {
+                Icon(
+                    painterResource(id = R.drawable.ic_baseline_favorite_border_24),
+                    contentDescription = null,
+                    tint = Color.LightGray
+                )
+            }
+        }
     }
 }
 
@@ -145,15 +217,19 @@ fun GlassStyleImage(colorGradient: Int, onClick: () -> Unit) {
     )
 }
 
-
 @Preview
 @Composable
 fun GlassesPreview() {
-    Glasses({})
+    Glasses({}, {}, {})
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CenterTopAppBar(onBack: () -> Unit, isFirstItemVisible: Boolean) {
+fun CenterTopAppBar(
+    isFirstItemVisible: Boolean,
+    onBack: () -> Unit,
+    onFiltersClick: () -> Unit,
+) {
     val tintColor = MaterialTheme.colors.primary
     CenterAlignedTopAppBar(
         title = {
@@ -178,7 +254,7 @@ fun CenterTopAppBar(onBack: () -> Unit, isFirstItemVisible: Boolean) {
             }
         },
         actions = {
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = { onFiltersClick() }) {
                 Icon(
                     painterResource(id = R.drawable.ic_baseline_filter_list_24),
                     contentDescription = null,

@@ -4,8 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.LocalElevationOverlay
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,9 +20,10 @@ import com.example.warbyparkerandroid.ui.theme.WarbyParkerAndroidTheme
 fun RootScreen() {
     val navController = rememberNavController()
     WarbyParkerAndroidTheme {
+        var showBottomBar by remember { mutableStateOf(true) }
         CompositionLocalProvider(LocalElevationOverlay provides null) {
             Scaffold(bottomBar = {
-                WPBottomNavBar(navController = navController)
+                if(showBottomBar) WPBottomNavBar(navController = navController)
             }) { innerPadding ->
                 NavHost(
                     navController,
@@ -38,11 +38,11 @@ fun RootScreen() {
                         })
                     }
                     composable(Route.EYEGLASSES.name) {
-                        Glasses(onBack = { navController.popBackStack() })
-                        composable(Screens.Favorites.route) { Text(text = "Favorites!") }
-                        composable(Screens.Account.route) { Text(text = "Account!") }
-                        composable(Screens.Cart.route) { Text(text = "Cart!") }
+                        Glasses(onBack = { navController.popBackStack() }, showBottomNav = { showBottomBar = true}, hideBottomNav = { showBottomBar = false })
                     }
+                    composable(Screens.Favorites.route) { Text(text = "Favorites!") }
+                    composable(Screens.Account.route) { Text(text = "Account!") }
+                    composable(Screens.Cart.route) { Text(text = "Cart!") }
                 }
             }
         }
