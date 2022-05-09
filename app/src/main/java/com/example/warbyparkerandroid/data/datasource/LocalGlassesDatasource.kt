@@ -67,10 +67,10 @@ val AllGlasses = listOf(
         ), isStackPick = true,
     ),
     Glasses(
-        "HAHAH LMFAO",
+        "HAHAH",
         arrayListOf(
             GlassStyle(
-                "Striped Sassafras",
+                "Striped Sassafrass",
                 R.drawable.percy_striped_sassafras,
                 R.drawable.percy,
                 95.00f,

@@ -1,10 +1,7 @@
 package com.example.warbyparkerandroid.ui.glasses
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.Crossfade
+import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -59,8 +56,11 @@ fun Glasses(
         }
     )
     val scope = rememberCoroutineScope()
+//    val glasses by viewModel.eyeGlasses
+//    DisposableEffect(key1 = viewModel) {
+////        onDispose { viewModel.clearAnimation() }
+//    }
     val glasses by viewModel.eyeGlasses.observeAsState(initial = emptyList())
-
     ModalBottomSheetLayout(
         sheetState = modalState,
         sheetContent = {
@@ -109,7 +109,13 @@ fun GlassesList(
             key = { glass ->
                 glass.brand
             }) {
-            GlassesItem(glasses = it) { style -> onUpdateStyle(style) }
+            AnimatedVisibility(
+                it.visible,
+                enter = slideInVertically(initialOffsetY = { 300 }) + fadeIn(tween(1500)),
+                exit = shrinkVertically()
+            ) {
+                GlassesItem(glasses = it) { style -> onUpdateStyle(style) }
+            }
         }
     }
 }
