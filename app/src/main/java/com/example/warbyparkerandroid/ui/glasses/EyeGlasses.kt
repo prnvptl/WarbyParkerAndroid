@@ -56,13 +56,10 @@ fun Glasses(
         }
     )
     val scope = rememberCoroutineScope()
-//    val glasses by viewModel.eyeGlasses
-//    DisposableEffect(key1 = viewModel) {
-////        onDispose { viewModel.clearAnimation() }
-//    }
     val glasses by viewModel.eyeGlasses.observeAsState(initial = emptyList())
     ModalBottomSheetLayout(
         sheetState = modalState,
+        sheetElevation = 8.dp,
         sheetContent = {
             FiltersContent {
                 showBottomNav()
