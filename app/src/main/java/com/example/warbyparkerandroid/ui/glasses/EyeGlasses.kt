@@ -1,14 +1,16 @@
 package com.example.warbyparkerandroid.ui.glasses
 
+import android.content.Intent
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.*
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -22,14 +24,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.warbyparkerandroid.R
 import com.example.warbyparkerandroid.data.model.GlassStyle
 import com.example.warbyparkerandroid.data.model.Glasses
+import com.example.warbyparkerandroid.ui.common.ColorStyledButtonList
+import com.example.warbyparkerandroid.ui.virtualtryon.AugmentedFaceActivity
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -38,7 +42,7 @@ fun Glasses(
     onBack: () -> Unit,
     hideBottomNav: () -> Unit,
     showBottomNav: () -> Unit,
-    viewModel: EyeGlassesViewModel = viewModel()
+    viewModel: EyeGlassesViewModel
 ) {
     val state = rememberLazyListState()
     val firstItemVisible by remember {
@@ -104,7 +108,7 @@ fun GlassesList(
         }
         items(glasses,
             key = { glass ->
-                glass.brand
+                glass.id
             }) {
             AnimatedVisibility(
                 it.visible,
@@ -122,9 +126,18 @@ fun GlassesItem(
     glasses: Glasses,
     onFavoriteClick: (style: GlassStyle) -> Unit
 ) {
+    val context = LocalContext.current
+
     var selectedStyle by remember { mutableStateOf(glasses.styles[0]) }
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                val intent = Intent(context, AugmentedFaceActivity::class.java)
+                intent.putExtra("glass", glasses)
+                intent.putExtra("glass_style", selectedStyle)
+                context.startActivity(intent)
+            },
     ) {
         Image(
             painter = painterResource(R.drawable.staffpick), contentDescription = null,
@@ -149,15 +162,11 @@ fun GlassesItem(
                 .fillMaxSize()
                 .padding(10.dp)
         ) {
-            LazyRow(
-                modifier = Modifier
+            ColorStyledButtonList(
+                selectedStyle = selectedStyle, styles = glasses.styles, modifier = Modifier
                     .align(Alignment.Center)
             ) {
-                items(glasses.styles) {
-                    StyleButton(colorGradient = it.colorGradient, selectedStyle.name == it.name) {
-                        selectedStyle = it
-                    }
-                }
+                selectedStyle = it
             }
             FavoriteButton(style = selectedStyle, modifier = Modifier.align(Alignment.TopEnd)) {
                 val copy = selectedStyle.copy()
@@ -191,23 +200,6 @@ fun FavoriteButton(style: GlassStyle, modifier: Modifier, onSelect: () -> Unit) 
 }
 
 @Composable
-fun StyleButton(colorGradient: Int, isSelected: Boolean, onSelect: () -> Unit) {
-    if (isSelected) {
-        OutlinedButton(
-            onClick = { onSelect() },
-            modifier = Modifier.size(35.dp),  //avoid the oval shape
-            shape = CircleShape,
-            border = BorderStroke(1.dp, Color.DarkGray),
-            contentPadding = PaddingValues(0.dp),  //avoid the little icon
-        ) {
-            GlassStyleImage(colorGradient = colorGradient) { onSelect() }
-        }
-    } else {
-        GlassStyleImage(colorGradient = colorGradient) { onSelect() }
-    }
-}
-
-@Composable
 fun GlassStyleImage(colorGradient: Int, onClick: () -> Unit) {
     Image(
         painter = painterResource(colorGradient), contentDescription = null,
@@ -223,7 +215,7 @@ fun GlassStyleImage(colorGradient: Int, onClick: () -> Unit) {
 @Preview
 @Composable
 fun GlassesPreview() {
-    Glasses({}, {}, {})
+//    Glasses({}, {}, {})
 }
 
 @OptIn(ExperimentalMaterialApi::class)

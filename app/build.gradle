@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.parcelize'
 }
 
 android {
@@ -35,6 +36,13 @@ android {
     buildFeatures {
         compose true
     }
+    buildFeatures {
+        viewBinding = true
+    }
+
+    buildFeatures {
+        dataBinding true
+    }
     composeOptions {
         kotlinCompilerExtensionVersion compose_version
     }
@@ -59,6 +67,7 @@ dependencies {
 
     // system ui controller (colors)
     implementation "com.google.accompanist:accompanist-systemuicontroller:$system_ui_cont_version"
+    implementation "com.google.accompanist:accompanist-pager:$system_ui_cont_version"
 
     // navigation
     implementation "androidx.navigation:navigation-compose:$navigation_compose_version"
@@ -67,6 +76,12 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$version_lifecycle")
 
     implementation("androidx.compose.runtime:runtime-livedata:1.1.1")
+
+    // sceneform, AR, 3d
+    implementation "com.gorisse.thomas.sceneform:sceneform:1.20.5"
+
+    implementation "androidx.appcompat:appcompat:1.4.1"
+    implementation "androidx.fragment:fragment:1.4.1"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

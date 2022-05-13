@@ -44,7 +44,7 @@ fun HomeScreen(
 
     val state = rememberLazyListState()
     LazyColumn(state = state) {
-        items(shopItems) {
+        items(shopItems, key = { it.imageId }) {
             ShopItemCard(item = it, isScrolling = state.isScrollInProgress)
         }
     }

@@ -6,9 +6,11 @@ import com.example.warbyparkerandroid.data.model.Glasses
 
 val AllGlasses = listOf(
     Glasses(
+        1L,
         "Percey",
         arrayListOf(
             GlassStyle(
+                1L,
                 "Striped Sassafras",
                 R.drawable.percy_striped_sassafras,
                 R.drawable.percy,
@@ -16,6 +18,7 @@ val AllGlasses = listOf(
                 false
             ),
             GlassStyle(
+                2L,
                 "Seaweed Crystal with Amber Tortoise\n",
                 R.drawable.seaweed_crystal_amber_skin,
                 R.drawable.seaweed_crystal_amber,
@@ -23,6 +26,7 @@ val AllGlasses = listOf(
                 false
             ),
             GlassStyle(
+                3L,
                 "Rye Tortoise",
                 R.drawable.rye_tortoise_skin,
                 R.drawable.rye_tortoise,
@@ -30,6 +34,7 @@ val AllGlasses = listOf(
                 false
             ),
             GlassStyle(
+                4L,
                 "Chestnut Crystal",
                 R.drawable.chestnut_crystal_skin,
                 R.drawable.chestnut_crystal,
@@ -37,6 +42,7 @@ val AllGlasses = listOf(
                 false
             ),
             GlassStyle(
+                5L,
                 "Crystal with Oak Barrel and Blue Bay\n",
                 R.drawable.crystal_oak_barrel_blue_bay_skin,
                 R.drawable.crystal_oak_barrel_blue_bay,
@@ -44,6 +50,7 @@ val AllGlasses = listOf(
                 false
             ),
             GlassStyle(
+                56L,
                 "Tidal Blue",
                 R.drawable.tidal_blue_skin,
                 R.drawable.tidal_blue,
@@ -51,6 +58,7 @@ val AllGlasses = listOf(
                 false
             ),
             GlassStyle(
+                7L,
                 "Jet Black Matte",
                 R.drawable.jet_black_matte_skin,
                 R.drawable.jetblack_matte,
@@ -58,18 +66,23 @@ val AllGlasses = listOf(
                 false
             ),
             GlassStyle(
+                8L,
                 "Crystal",
                 R.drawable.crystal_skin,
                 R.drawable.crystal,
                 95.00f,
                 false
             )
-        ), isStackPick = true,
+        ),
+        isStackPick = true,
+        imageIds = listOf(R.drawable.percy_1, R.drawable.percy_2, R.drawable.percy_3)
     ),
     Glasses(
+        2L,
         "HAHAH",
         arrayListOf(
             GlassStyle(
+                1L,
                 "Striped Sassafrass",
                 R.drawable.percy_striped_sassafras,
                 R.drawable.percy,
@@ -77,6 +90,7 @@ val AllGlasses = listOf(
                 false
             ),
             GlassStyle(
+                2L,
                 "Seaweed Crystal with Amber Tortoise\n",
                 R.drawable.seaweed_crystal_amber_skin,
                 R.drawable.seaweed_crystal_amber,
@@ -84,6 +98,7 @@ val AllGlasses = listOf(
                 false
             ),
             GlassStyle(
+                3L,
                 "Rye Tortoise",
                 R.drawable.rye_tortoise_skin,
                 R.drawable.rye_tortoise,
@@ -91,6 +106,7 @@ val AllGlasses = listOf(
                 false
             ),
             GlassStyle(
+                4L,
                 "Chestnut Crystal",
                 R.drawable.chestnut_crystal_skin,
                 R.drawable.chestnut_crystal,
@@ -98,6 +114,7 @@ val AllGlasses = listOf(
                 false
             ),
             GlassStyle(
+                5L,
                 "Crystal with Oak Barrel and Blue Bay\n",
                 R.drawable.crystal_oak_barrel_blue_bay_skin,
                 R.drawable.crystal_oak_barrel_blue_bay,
@@ -105,6 +122,7 @@ val AllGlasses = listOf(
                 false
             ),
             GlassStyle(
+                6L,
                 "Tidal Blue",
                 R.drawable.tidal_blue_skin,
                 R.drawable.tidal_blue,
@@ -112,6 +130,7 @@ val AllGlasses = listOf(
                 false
             ),
             GlassStyle(
+                7L,
                 "Jet Black Matte",
                 R.drawable.jet_black_matte_skin,
                 R.drawable.jetblack_matte,
@@ -119,12 +138,15 @@ val AllGlasses = listOf(
                 false
             ),
             GlassStyle(
+                8L,
                 "Crystal",
                 R.drawable.crystal_skin,
                 R.drawable.crystal,
                 95.00f,
                 false
             )
-        ), isStackPick = true,
+        ),
+        isStackPick = true,
+        imageIds = listOf(R.drawable.percy_1, R.drawable.percy_1, R.drawable.percy_1)
     )
 )
