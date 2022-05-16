@@ -2,6 +2,8 @@ package com.example.warbyparkerandroid.ui.glassdetail
 
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -9,11 +11,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +37,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.warbyparkerandroid.R
 import com.example.warbyparkerandroid.data.model.GlassStyle
 import com.example.warbyparkerandroid.data.model.Glasses
 import com.example.warbyparkerandroid.ui.common.ColorStyledButtonList
@@ -57,7 +63,12 @@ fun GlassDetail(
     val initialStyle = glass.styles.find { selectedStyle.id == it.id }
     var style by remember { mutableStateOf(initialStyle) }
     val coroutineScope = rememberCoroutineScope()
-
+    val state = rememberLazyListState()
+    val firstItemVisible by remember {
+        derivedStateOf {
+            state.firstVisibleItemIndex == 0
+        }
+    }
     CompositionLocalProvider(LocalElevationOverlay provides null) {
         WarbyParkerAndroidTheme {
             var bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
@@ -73,26 +84,34 @@ fun GlassDetail(
                 sheetPeekHeight = 100.dp,
                 backgroundColor = Color.Transparent,
                 sheetContent = {
-                    BoxWithConstraints(modifier = Modifier.fillMaxWidth(1f)) {
-                        HeaderContainer(
-                            title = glass.brand,
-                            bottomSheetState = bottomSheetScaffoldState.bottomSheetState
-                        ) {
-                            LazyColumn {
-                                item {
+
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        LazyColumn(state = state) {
+                            item {
+                                HeaderContainer(
+                                    title = glass.brand,
+                                    bottomSheetState = bottomSheetScaffoldState.bottomSheetState
+                                )
+                            }
+                            item {
+
+                                Column(
+                                    Modifier
+                                        .clip(MaterialTheme.shapes.medium)
+                                        .fillMaxSize()
+                                        .background(Color.White),
+                                    verticalArrangement = Arrangement.SpaceBetween
+                                ) {
+
                                     DetailHeader(selectedImagesIndicator = pagerSelection) {
                                         onNavBackPressed()
                                     }
-                                }
 
-                                item {
                                     HorizontalGlassScroller(glassImages = glass.imageIds) { page ->
                                         pagerSelection.clear()
                                         val newItems = listOf(page == 0, page == 1, page == 2)
                                         pagerSelection.addAll(newItems)
                                     }
-                                }
-                                item {
                                     ColorStyledButtonList(
                                         selectedStyle = style!!,
                                         styles = glass.styles,
@@ -112,8 +131,6 @@ fun GlassDetail(
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     }
-                                }
-                                item {
                                     GlassNameContainer(
                                         brand = glass.brand,
                                         style = selectedStyle,
@@ -125,8 +142,6 @@ fun GlassDetail(
                                     ) {
                                         viewModel.update(it)
                                     }
-                                }
-                                item {
                                     Divider(
                                         modifier = Modifier
                                             .fillMaxWidth()
@@ -135,40 +150,72 @@ fun GlassDetail(
                                         thickness = 2.dp,
                                         color = MaterialTheme.colors.onBackground
                                     )
-                                }
-
-                                item {
                                     PriceDescription(selectedStyle.price.toInt())
-                                }
-
-                                item {
                                     BasicDescription(glass)
-                                }
-                                item {
                                     VirtualTryOnSection(glass) {
                                         coroutineScope.launch {
                                             bottomSheetScaffoldState.bottomSheetState.collapse()
                                         }
 
                                     }
-                                }
-                                item {
                                     WidthDescription(glass)
-                                }
-                                item {
                                     PrescriptionDescription(glass)
-                                }
-                                item {
                                     WhatsIncluded(glass)
+
                                 }
                             }
+                        }
+                        androidx.compose.animation.AnimatedVisibility(
+                            visible = !firstItemVisible && bottomSheetScaffoldState.bottomSheetState.isExpanded,
+                            enter = fadeIn(),
+                            exit = fadeOut()
+                        ) {
+                            CenterAlignedTopAppBar(
+                                title = {
+                                    Text(buildAnnotatedString {
+                                        withStyle(style = SpanStyle(fontSize = 20.sp)) {
+                                            append("${glass.brand}\n")
+                                        }
+                                        style?.let { append(it.name) }
+                                    }, textAlign = TextAlign.Center)
+
+                                },
+                                navigationIcon = {
+                                    CloseButton() {
+                                        onNavBackPressed()
+                                    }
+                                },
+                                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                                    containerColor = Color.White
+                                ),
+                                actions = {
+                                    IconButton(
+                                        onClick = {
+                                            coroutineScope.launch {
+                                                bottomSheetScaffoldState.bottomSheetState.collapse()
+                                                state.animateScrollToItem(0)
+                                            }
+
+                                        },
+                                        modifier = Modifier.padding(end = 12.dp)
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.ic_baseline_camera_front_24),
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colors.primaryVariant
+                                        )
+                                    }
+                                },
+                                modifier = Modifier
+                                    .align(Alignment.TopCenter)
+                            )
                         }
                         ShopActionButtons(
                             price = selectedStyle.price.toInt(),
                             modifier = Modifier.align(Alignment.BottomCenter)
                         )
                     }
-                }
+                },
             ) {}
         }
     }
@@ -644,7 +691,7 @@ fun CloseButton(onSelect: () -> Unit) {
 fun HeaderContainer(
     title: String,
     bottomSheetState: BottomSheetState,
-    content: @Composable ColumnScope.() -> Unit
+//    content: @Composable ColumnScope.() -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -687,13 +734,13 @@ fun HeaderContainer(
                 .fillMaxWidth()
                 .height(12.dp)
         )
-        Column(
-            Modifier
-                .clip(MaterialTheme.shapes.medium)
-                .fillMaxSize()
-                .background(Color.White),
-            content = content,
-            verticalArrangement = Arrangement.SpaceBetween
-        )
+//        Column(
+//            Modifier
+//                .clip(MaterialTheme.shapes.medium)
+//                .fillMaxSize()
+//                .background(Color.White),
+//            content = content,
+//            verticalArrangement = Arrangement.SpaceBetween
+//        )
     }
 }
