@@ -8,6 +8,7 @@ val AllGlasses = listOf(
     Glasses(
         1L,
         "Percey",
+        description = "With round lenses and a keyhole bridge, Percey is a bookish modern classic.",
         arrayListOf(
             GlassStyle(
                 1L,
@@ -75,11 +76,17 @@ val AllGlasses = listOf(
             )
         ),
         isStackPick = true,
-        imageIds = listOf(R.drawable.percy_1, R.drawable.percy_2, R.drawable.percy_3)
+        imageIds = listOf(R.drawable.percy_1, R.drawable.percy_2, R.drawable.percy_3),
+        descriptionImg = R.drawable.percey_person,
+        virtualTryOnImg = R.drawable.virtual_try,
+        multiWidthImg = R.drawable.multi_width,
+        perscriptionImg = R.drawable.perscription,
+        whatsIncludedImg = R.drawable.whats_included
     ),
     Glasses(
         2L,
         "HAHAH",
+        description = "With round lenses and a keyhole bridge, Percey is a bookish modern classic.",
         arrayListOf(
             GlassStyle(
                 1L,
@@ -147,6 +154,11 @@ val AllGlasses = listOf(
             )
         ),
         isStackPick = true,
-        imageIds = listOf(R.drawable.percy_1, R.drawable.percy_1, R.drawable.percy_1)
+        imageIds = listOf(R.drawable.percy_1, R.drawable.percy_1, R.drawable.percy_1),
+        descriptionImg = R.drawable.percey_person,
+        virtualTryOnImg = R.drawable.virtual_try,
+        multiWidthImg = R.drawable.multi_width,
+        perscriptionImg = R.drawable.perscription,
+        whatsIncludedImg = R.drawable.whats_included
     )
 )

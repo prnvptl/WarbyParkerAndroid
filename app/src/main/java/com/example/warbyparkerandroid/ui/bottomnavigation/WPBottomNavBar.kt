@@ -56,12 +56,15 @@ fun WPBottomNavBar(
                 BottomNavigationItem(
                     icon = {
                         if (screen.route == Route.FAVORITES.name && favState!! > 0) {
-                            BadgeBox(badgeContent = {
-                                Text(
-                                    favState.toString(),
-                                    color = Color.White
-                                )
-                            }, backgroundColor = MaterialTheme.colors.primaryVariant) {
+                            BadgedBox(badge = {
+                                Badge(backgroundColor = MaterialTheme.colors.primaryVariant) {
+                                    Text(
+                                        favState.toString(),
+                                        color = Color.White
+                                    )
+                                }
+
+                            }) {
                                 Icon(
                                     painterResource(id = screen.iconId),
                                     contentDescription = null,

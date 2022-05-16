@@ -2,6 +2,7 @@ package com.example.warbyparkerandroid.ui.virtualtryon
 
 import android.net.Uri
 import android.os.Bundle
+import android.view.KeyEvent
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -13,6 +14,7 @@ import com.example.warbyparkerandroid.data.model.GlassStyle
 import com.example.warbyparkerandroid.data.model.Glasses
 import com.example.warbyparkerandroid.databinding.ActivityAugmentedFaceBinding
 import com.example.warbyparkerandroid.ui.glassdetail.GlassDetail
+import com.example.warbyparkerandroid.ui.glasses.EyeGlassesViewModel
 import com.google.ar.core.AugmentedFace
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.ArSceneView
@@ -41,12 +43,14 @@ class AugmentedFaceActivity : AppCompatActivity() {
         )
         var glass: Glasses = intent.extras?.get("glass") as Glasses
         var style: GlassStyle = intent.extras?.get("glass_style") as GlassStyle
+        var viewModel: EyeGlassesViewModel = intent.extras?.get("view_model") as EyeGlassesViewModel
+
         mViewBinding?.apply {
             composeView.apply {
-                if (style != null && glass != null) {
+                if (style != null && glass != null && viewModel != null) {
                     setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                     setContent {
-                        GlassDetail(glass, style)
+                        GlassDetail(glass, style, viewModel) { emulateBackPress() }
                     }
                 }
             }
@@ -65,6 +69,22 @@ class AugmentedFaceActivity : AppCompatActivity() {
             }
         }
         loadModels()
+    }
+
+    private fun emulateBackPress() {
+        this.dispatchKeyEvent(
+            KeyEvent(
+                KeyEvent.ACTION_DOWN,
+                KeyEvent.KEYCODE_BACK
+            )
+        )
+        this.dispatchKeyEvent(
+            KeyEvent(
+                KeyEvent.ACTION_UP,
+                KeyEvent.KEYCODE_BACK
+            )
+        )
+        finish()
     }
 
     private fun onAttachFragment(fragmentManager: FragmentManager, fragment: Fragment) {

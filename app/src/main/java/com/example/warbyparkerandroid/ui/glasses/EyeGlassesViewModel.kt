@@ -1,5 +1,6 @@
 package com.example.warbyparkerandroid.ui.glasses
 
+import android.os.Parcelable
 import android.util.Log
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
@@ -10,8 +11,10 @@ import com.example.warbyparkerandroid.data.datasource.AllGlasses
 import com.example.warbyparkerandroid.data.model.GlassStyle
 import com.example.warbyparkerandroid.data.model.Glasses
 import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
 
-class EyeGlassesViewModel : ViewModel() {
+@Parcelize
+class EyeGlassesViewModel : ViewModel(), Parcelable {
 
     private var _eyeGlasses = MutableLiveData<SnapshotStateList<Glasses>>()
     val eyeGlasses get() = _eyeGlasses

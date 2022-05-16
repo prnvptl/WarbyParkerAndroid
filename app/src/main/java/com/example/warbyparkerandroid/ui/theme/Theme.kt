@@ -1,5 +1,6 @@
 package com.example.warbyparkerandroid.ui.theme
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
@@ -9,12 +10,14 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
+@SuppressLint("ConflictingOnColor")
 private val DarkColorPalette = darkColors(
     primary = Blue200,
     primaryVariant = Blue800,
     secondary = White100,
     background = Color.White,
     surface = Color.White,
+    onBackground = Color(0xffe1e5e6),
 )
 
 private val LightColorPalette = lightColors(
@@ -22,7 +25,7 @@ private val LightColorPalette = lightColors(
     primaryVariant = Blue800,
     secondary = White100,
     background = Color.White,
-    onBackground = Color.White,
+    onBackground = Color(0xffe1e5e6),
     /* Other default colors to override
     background = Color.White,
     surface = Color.White,

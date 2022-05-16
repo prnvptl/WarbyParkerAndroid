@@ -7,10 +7,16 @@ import kotlinx.parcelize.Parcelize
 data class Glasses(
     val id: Long,
     var brand: String,
+    val description: String,
     var styles: ArrayList<GlassStyle>,
     val isStackPick: Boolean,
     var visible: Boolean = false,
-    val imageIds: List<Int>
+    val imageIds: List<Int>,
+    val descriptionImg: Int,
+    val virtualTryOnImg: Int,
+    val multiWidthImg: Int,
+    val perscriptionImg: Int,
+    val whatsIncludedImg: Int
 ) : Parcelable
 
 @Parcelize

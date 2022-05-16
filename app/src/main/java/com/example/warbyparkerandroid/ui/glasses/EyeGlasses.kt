@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,6 +34,7 @@ import com.example.warbyparkerandroid.R
 import com.example.warbyparkerandroid.data.model.GlassStyle
 import com.example.warbyparkerandroid.data.model.Glasses
 import com.example.warbyparkerandroid.ui.common.ColorStyledButtonList
+import com.example.warbyparkerandroid.ui.common.FavoriteButton
 import com.example.warbyparkerandroid.ui.virtualtryon.AugmentedFaceActivity
 import kotlinx.coroutines.launch
 
@@ -44,6 +46,8 @@ fun Glasses(
     showBottomNav: () -> Unit,
     viewModel: EyeGlassesViewModel
 ) {
+    val context = LocalContext.current
+
     val state = rememberLazyListState()
     val firstItemVisible by remember {
         derivedStateOf {
@@ -79,9 +83,16 @@ fun Glasses(
                 }
             }
         ) {
-            GlassesList(state, glasses) {
-                viewModel.update(it)
-            }
+
+            val intent = Intent(context, AugmentedFaceActivity::class.java)
+//            intent.putExtra("glass", it)
+//            context.startActivity(intent)
+            intent.putExtra("view_model", viewModel)
+            GlassesList(
+                state,
+                glasses,
+                onUpdateStyle = { viewModel.update(it) },
+                onGlassSelect = { intent })
         }
     }
 }
@@ -91,7 +102,8 @@ fun Glasses(
 fun GlassesList(
     state: LazyListState,
     glasses: List<Glasses>,
-    onUpdateStyle: (style: GlassStyle) -> Unit
+    onUpdateStyle: (style: GlassStyle) -> Unit,
+    onGlassSelect: () -> Intent
 ) {
     LazyColumn(
         state = state,
@@ -115,7 +127,9 @@ fun GlassesList(
                 enter = slideInVertically(initialOffsetY = { 300 }) + fadeIn(tween(1500)),
                 exit = shrinkVertically()
             ) {
-                GlassesItem(glasses = it) { style -> onUpdateStyle(style) }
+                GlassesItem(glasses = it, onFavoriteClick = { style -> onUpdateStyle(style) }) {
+                    onGlassSelect()
+                }
             }
         }
     }
@@ -124,16 +138,20 @@ fun GlassesList(
 @Composable
 fun GlassesItem(
     glasses: Glasses,
-    onFavoriteClick: (style: GlassStyle) -> Unit
+    onFavoriteClick: (style: GlassStyle) -> Unit,
+    onGlassSelect: () -> Intent
 ) {
     val context = LocalContext.current
 
     var selectedStyle by remember { mutableStateOf(glasses.styles[0]) }
+    SideEffect {
+        onFavoriteClick(selectedStyle)
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                val intent = Intent(context, AugmentedFaceActivity::class.java)
+                val intent = onGlassSelect()
                 intent.putExtra("glass", glasses)
                 intent.putExtra("glass_style", selectedStyle)
                 context.startActivity(intent)
@@ -155,6 +173,7 @@ fun GlassesItem(
             text = glasses.brand,
             style = MaterialTheme.typography.h4,
             textAlign = TextAlign.Center,
+            fontFamily = FontFamily.Serif,
             modifier = Modifier.fillMaxWidth()
         )
         Box(
@@ -178,26 +197,26 @@ fun GlassesItem(
     }
 }
 
-@Composable
-fun FavoriteButton(style: GlassStyle, modifier: Modifier, onSelect: () -> Unit) {
-    IconButton(onClick = { onSelect() }, modifier = modifier) {
-        Crossfade(targetState = style.isFavorite) {
-            if (it) {
-                Icon(
-                    painterResource(id = R.drawable.ic_baseline_favorite_24),
-                    contentDescription = null,
-                    tint = Color.Red
-                )
-            } else {
-                Icon(
-                    painterResource(id = R.drawable.ic_baseline_favorite_border_24),
-                    contentDescription = null,
-                    tint = Color.LightGray
-                )
-            }
-        }
-    }
-}
+//@Composable
+//fun FavoriteButton(style: GlassStyle, modifier: Modifier, onSelect: () -> Unit) {
+//    IconButton(onClick = { onSelect() }, modifier = modifier) {
+//        Crossfade(targetState = style.isFavorite) {
+//            if (it) {
+//                Icon(
+//                    painterResource(id = R.drawable.ic_baseline_favorite_24),
+//                    contentDescription = null,
+//                    tint = Color.Red
+//                )
+//            } else {
+//                Icon(
+//                    painterResource(id = R.drawable.ic_baseline_favorite_border_24),
+//                    contentDescription = null,
+//                    tint = Color.LightGray
+//                )
+//            }
+//        }
+//    }
+//}
 
 @Composable
 fun GlassStyleImage(colorGradient: Int, onClick: () -> Unit) {
@@ -237,6 +256,7 @@ fun CenterTopAppBar(
                     text = "Eyeglasses",
                     style = MaterialTheme.typography.h5,
                     textAlign = TextAlign.Center,
+                    fontFamily = FontFamily.Serif,
                     modifier = Modifier
                         .padding(10.dp)
                         .fillMaxWidth(),
