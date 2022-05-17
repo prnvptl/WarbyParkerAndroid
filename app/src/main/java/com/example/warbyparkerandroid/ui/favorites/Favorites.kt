@@ -1,25 +1,127 @@
 package com.example.warbyparkerandroid.ui.favorites
 
-import android.content.Context
-import android.view.LayoutInflater
-import android.view.View
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Text
+import android.annotation.SuppressLint
+import android.content.Intent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.*
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.warbyparkerandroid.R
 import com.example.warbyparkerandroid.data.model.GlassStyle
 import com.example.warbyparkerandroid.data.model.Glasses
+import com.example.warbyparkerandroid.ui.common.GlassesList
 import com.example.warbyparkerandroid.ui.glasses.EyeGlassesViewModel
+import com.example.warbyparkerandroid.ui.virtualtryon.AugmentedFaceActivity
 
 @Composable
-fun Favs(viewModel: EyeGlassesViewModel) {
-    val count by remember { mutableStateOf(viewModel.favoritesCount) }
-    Text("Size of favs $count")
+fun Favorites(viewModel: EyeGlassesViewModel, onShopClicked: () -> Unit) {
+    val glasses by viewModel.eyeGlasses.observeAsState(initial = emptyList())
+    val favState by viewModel.favoritesCount.observeAsState()
+    if (favState!! <= 0) {
+        FavoriteEmptyState(onShopClicked)
+    } else {
+        FavoritesContent(glasses = glasses, viewModel)
+    }
+}
+
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@Composable
+fun FavoritesContent(glasses: List<Glasses>, viewModel: EyeGlassesViewModel) {
+    val favorites = mutableListOf<Glasses>()
+    val favPredicate: (GlassStyle) -> Boolean = { it.isFavorite }
+    glasses.forEach { glass ->
+        val favs = glass.styles.filter(favPredicate)
+        if (favs.isNotEmpty()) {
+            val copy = glass.copy()
+            copy.styles = ArrayList(favs)
+            favorites.add(copy)
+        }
+    }
+    val context = LocalContext.current
+    val state = rememberLazyListState()
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = { Text(text = "Favorites", style = MaterialTheme.typography.h5) },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.White
+                ),
+            )
+        }
+    ) {
+        val intent = Intent(context, AugmentedFaceActivity::class.java)
+        intent.putExtra("view_model", viewModel)
+        GlassesList(
+            state,
+            favorites,
+            showHeader = false,
+            onUpdateStyle = { viewModel.update(it) },
+            onGlassSelect = { intent })
+    }
+}
+
+@Composable
+fun FavoriteEmptyState(onShopClicked: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .wrapContentSize(),
+        verticalArrangement = Arrangement.spacedBy(15.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            "No favorites to be found",
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.h5,
+            fontWeight = FontWeight.SemiBold
+        )
+        Text("(Click below to change that.)", textAlign = TextAlign.Center, fontSize = 18.sp)
+        Image(
+            painter = painterResource(id = R.drawable.no_favorites_img),
+            contentDescription = null,
+            modifier = Modifier.padding(vertical = 40.dp)
+        )
+        Button(
+            onClick = { onShopClicked() },
+            shape = MaterialTheme.shapes.large,
+            modifier = Modifier
+                .width(175.dp)
+                .height(40.dp),
+            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primaryVariant)
+        ) {
+            Text("Start Shopping", color = Color.White)
+        }
+        val caption = buildAnnotatedString {
+            append("Already have favorites? ")
+            withStyle(
+                style = SpanStyle(
+                    color = MaterialTheme.colors.primaryVariant,
+                    fontWeight = FontWeight.SemiBold
+                )
+            ) {
+                append("Sign In.")
+            }
+        }
+        Text(caption, fontSize = 20.sp, modifier = Modifier.clickable {
+
+        })
+    }
 }

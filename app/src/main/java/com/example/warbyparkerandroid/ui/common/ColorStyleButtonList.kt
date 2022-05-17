@@ -17,21 +17,32 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.warbyparkerandroid.R
 import com.example.warbyparkerandroid.data.model.GlassStyle
-import com.example.warbyparkerandroid.ui.glasses.GlassStyleImage
 
 @Composable
 fun ColorStyledButtonList(
     selectedStyle: GlassStyle,
     styles: List<GlassStyle>,
     modifier: Modifier,
+    showOnlyFavorites: Boolean = false,
     onSelect: (selectedStyle: GlassStyle) -> Unit
 ) {
     LazyRow(
         modifier = modifier
     ) {
-        items(styles, key = { it.id }) {
-            ColorStyleButton(colorGradient = it.colorGradient, selectedStyle.name == it.name) {
-                onSelect(it)
+        if(showOnlyFavorites) {
+            items(styles, key = { it.id }) {
+                if(it.isFavorite) {
+                    ColorStyleButton(colorGradient = it.colorGradient, selectedStyle.name == it.name) {
+                        onSelect(it)
+                    }
+                }
+
+            }
+        } else {
+            items(styles, key = { it.id }) {
+                ColorStyleButton(colorGradient = it.colorGradient, selectedStyle.name == it.name) {
+                    onSelect(it)
+                }
             }
         }
     }
@@ -51,36 +62,5 @@ fun ColorStyleButton(colorGradient: Int, isSelected: Boolean, onSelect: () -> Un
         }
     } else {
         GlassStyleImage(colorGradient = colorGradient) { onSelect() }
-    }
-}
-
-@Composable
-fun FavoriteButton(
-    style: GlassStyle,
-    isFavorite: Boolean? = null,
-    modifier: Modifier,
-    onSelect: () -> Unit
-) {
-    val isFav = if (isFavorite != null) {
-        isFavorite
-    } else {
-        style.isFavorite
-    }
-    IconButton(onClick = { onSelect() }, modifier = modifier) {
-        Crossfade(targetState = isFav) {
-            if (it) {
-                Icon(
-                    painterResource(id = R.drawable.ic_baseline_favorite_24),
-                    contentDescription = null,
-                    tint = Color.Red
-                )
-            } else {
-                Icon(
-                    painterResource(id = R.drawable.ic_baseline_favorite_border_24),
-                    contentDescription = null,
-                    tint = Color.LightGray
-                )
-            }
-        }
     }
 }

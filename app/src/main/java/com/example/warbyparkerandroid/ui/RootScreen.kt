@@ -5,7 +5,6 @@ import androidx.compose.material.LocalElevationOverlay
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -14,8 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.warbyparkerandroid.ui.bottomnavigation.Route
 import com.example.warbyparkerandroid.ui.bottomnavigation.Screens
 import com.example.warbyparkerandroid.ui.bottomnavigation.WPBottomNavBar
-import com.example.warbyparkerandroid.ui.favorites.Favs
-import com.example.warbyparkerandroid.ui.glassdetail.GlassDetail
+import com.example.warbyparkerandroid.ui.favorites.Favorites
 import com.example.warbyparkerandroid.ui.glasses.EyeGlassesViewModel
 import com.example.warbyparkerandroid.ui.glasses.Glasses
 import com.example.warbyparkerandroid.ui.shop.HomeScreen
@@ -30,11 +28,11 @@ fun RootScreen() {
 //        val favCount = viewModel.favoritesCount
         CompositionLocalProvider(LocalElevationOverlay provides null) {
             Scaffold(bottomBar = {
-                if(showBottomBar) WPBottomNavBar(navController = navController, viewModel)
+                if (showBottomBar) WPBottomNavBar(navController = navController, viewModel)
             }) { innerPadding ->
                 NavHost(
                     navController,
-                    startDestination = Screens.Shop.route,
+                    startDestination = Screens.Favorites.route,
                     Modifier.padding(innerPadding)
                 ) {
                     composable(Screens.Shop.route) {
@@ -49,9 +47,14 @@ fun RootScreen() {
                             onBack = { navController.popBackStack() },
                             showBottomNav = { showBottomBar = true },
                             hideBottomNav = { showBottomBar = false },
-                        viewModel = viewModel)
+                            viewModel = viewModel
+                        )
                     }
-                    composable(Screens.Favorites.route) { Favs(viewModel) }
+                    composable(Screens.Favorites.route) {
+                        Favorites(viewModel) {
+                            navController.navigate(Route.SHOP.name)
+                        }
+                    }
                     composable(Screens.Account.route) { Text(text = "Account!") }
                     composable(Screens.Cart.route) { Text(text = "Cart!") }
                 }

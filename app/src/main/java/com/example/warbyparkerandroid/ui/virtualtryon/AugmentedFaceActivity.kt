@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.KeyEvent
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.databinding.DataBindingUtil
@@ -34,6 +35,7 @@ class AugmentedFaceActivity : AppCompatActivity() {
     private var faceModel: ModelRenderable? = null
     private val facesNodes = HashMap<AugmentedFace, AugmentedFaceNode>()
     private var mViewBinding: ActivityAugmentedFaceBinding? = null
+//    val mViewModel: EyeGlassesViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
