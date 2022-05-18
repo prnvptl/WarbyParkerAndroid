@@ -61,6 +61,10 @@ fun Glasses(
     )
     val scope = rememberCoroutineScope()
     val glasses by viewModel.eyeGlasses.observeAsState(initial = emptyList())
+    SideEffect {
+        Log.i("Glasses~~! ", "favState.toString()")
+        viewModel.updateCount()
+    }
     ModalBottomSheetLayout(
         sheetState = modalState,
         sheetElevation = 8.dp,
@@ -79,6 +83,8 @@ fun Glasses(
                 }
             }
         ) {
+
+
             Log.i("padding", "$it")
             val intent = Intent(context, AugmentedFaceActivity::class.java)
             intent.putExtra("view_model", viewModel)

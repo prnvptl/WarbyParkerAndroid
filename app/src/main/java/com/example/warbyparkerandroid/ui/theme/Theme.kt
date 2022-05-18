@@ -60,7 +60,7 @@ fun SystemUIControl() {
     // Remember a SystemUiController
     val systemUiController = rememberSystemUiController()
     val useDarkIcons = MaterialTheme.colors.isLight
-    val backgroundColor = MaterialTheme.colors.background
+    val backgroundColor = Color.Transparent
     SideEffect {
         // Update all of the system bar colors to be transparent, and use
         // dark icons if we're in light theme

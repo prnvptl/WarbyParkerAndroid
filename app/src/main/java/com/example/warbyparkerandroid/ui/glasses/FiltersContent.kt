@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.warbyparkerandroid.data.model.GlassFilter
 import com.example.warbyparkerandroid.ui.theme.WarbyParkerAndroidTheme
+import kotlinx.coroutines.launch
 
 @OptIn(
     ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class,
@@ -160,7 +161,9 @@ fun FiltersContent(onClose: () -> Unit) {
             .fillMaxHeight(0.98f),
         sheetShape = RectangleShape,
         sheetContent = {
-            FiltersConfirmOverlay(framesCount = frameCount) {}
+            FiltersConfirmOverlay(framesCount = frameCount) {
+                onClose()
+            }
         }) {
         CollapsableHandle()
         Scaffold(
@@ -182,7 +185,8 @@ fun FiltersContent(onClose: () -> Unit) {
                     Spacer(
                         Modifier
                             .fillMaxWidth()
-                            .height(4.dp))
+                            .height(4.dp)
+                    )
                 }
                 item {
                     FrameWidthFilter(
@@ -494,7 +498,12 @@ fun FilterHeader(title: String, count: Int) {
 }
 
 @Composable
-fun FiltersTopBar(onClose: () -> Unit, showReset: Boolean, isFirstItemVisible: Boolean, resetOnClick: () -> Unit) {
+fun FiltersTopBar(
+    onClose: () -> Unit,
+    showReset: Boolean,
+    isFirstItemVisible: Boolean,
+    resetOnClick: () -> Unit
+) {
     Column {
         CenterAlignedTopAppBar(
             title = {

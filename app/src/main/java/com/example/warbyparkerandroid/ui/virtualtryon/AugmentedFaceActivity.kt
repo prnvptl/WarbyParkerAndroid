@@ -50,7 +50,7 @@ class AugmentedFaceActivity : AppCompatActivity() {
         mViewBinding?.apply {
             composeView.apply {
                 if (style != null && glass != null && viewModel != null) {
-                    setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                    setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
                     setContent {
                         GlassDetail(glass, style, viewModel) { emulateBackPress() }
                     }

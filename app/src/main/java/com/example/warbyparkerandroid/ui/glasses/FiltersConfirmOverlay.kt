@@ -44,7 +44,7 @@ fun FiltersConfirmOverlay(framesCount: Int, onConfirmClick: () -> Unit) {
             )
         }
         Button(
-            onClick = { /*TODO*/ },
+            onClick = { onConfirmClick() },
             colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primaryVariant),
             modifier = Modifier
                 .padding(10.dp)

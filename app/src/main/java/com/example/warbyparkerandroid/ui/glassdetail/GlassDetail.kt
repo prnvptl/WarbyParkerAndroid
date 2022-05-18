@@ -1,6 +1,5 @@
 package com.example.warbyparkerandroid.ui.glassdetail
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -16,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
@@ -40,8 +38,10 @@ import androidx.compose.ui.unit.sp
 import com.example.warbyparkerandroid.R
 import com.example.warbyparkerandroid.data.model.GlassStyle
 import com.example.warbyparkerandroid.data.model.Glasses
+import com.example.warbyparkerandroid.ui.common.CloseButton
 import com.example.warbyparkerandroid.ui.common.ColorStyledButtonList
 import com.example.warbyparkerandroid.ui.common.FavoriteButton
+import com.example.warbyparkerandroid.ui.common.FloatingActionButtons
 import com.example.warbyparkerandroid.ui.glasses.CollapsableHandle
 import com.example.warbyparkerandroid.ui.glasses.EyeGlassesViewModel
 import com.example.warbyparkerandroid.ui.theme.WarbyParkerAndroidTheme
@@ -135,9 +135,7 @@ fun GlassDetail(
                                         brand = glass.brand,
                                         style = selectedStyle,
                                         modifier = Modifier.padding(
-                                            start = 14.dp,
-                                            end = 14.dp,
-                                            top = 30.dp
+                                            start = 14.dp, end = 14.dp, top = 30.dp
                                         )
                                     ) {
                                         viewModel.update(it)
@@ -170,49 +168,52 @@ fun GlassDetail(
                             enter = fadeIn(),
                             exit = fadeOut()
                         ) {
-                            CenterAlignedTopAppBar(
-                                title = {
-                                    Text(buildAnnotatedString {
-                                        withStyle(style = SpanStyle(fontSize = 20.sp)) {
-                                            append("${glass.brand}\n")
+                            CenterAlignedTopAppBar(title = {
+                                Text(buildAnnotatedString {
+                                    withStyle(style = SpanStyle(fontSize = 20.sp)) {
+                                        append("${glass.brand}\n")
+                                    }
+                                    style?.let { append(it.name) }
+                                }, textAlign = TextAlign.Center)
+
+                            }, navigationIcon = {
+                                CloseButton(modifier = Modifier.padding(start = 8.dp)) {
+                                    onNavBackPressed()
+                                }
+                            }, colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                                containerColor = Color.White
+                            ), actions = {
+                                IconButton(
+                                    onClick = {
+                                        coroutineScope.launch {
+                                            bottomSheetScaffoldState.bottomSheetState.collapse()
+                                            state.animateScrollToItem(0)
                                         }
-                                        style?.let { append(it.name) }
-                                    }, textAlign = TextAlign.Center)
 
-                                },
-                                navigationIcon = {
-                                    CloseButton() {
-                                        onNavBackPressed()
-                                    }
-                                },
-                                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                                    containerColor = Color.White
-                                ),
-                                actions = {
-                                    IconButton(
-                                        onClick = {
-                                            coroutineScope.launch {
-                                                bottomSheetScaffoldState.bottomSheetState.collapse()
-                                                state.animateScrollToItem(0)
-                                            }
-
-                                        },
-                                        modifier = Modifier.padding(end = 12.dp)
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.ic_baseline_camera_front_24),
-                                            contentDescription = null,
-                                            tint = MaterialTheme.colors.primaryVariant
-                                        )
-                                    }
-                                },
-                                modifier = Modifier
-                                    .align(Alignment.TopCenter)
+                                    }, modifier = Modifier.padding(end = 12.dp)
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_baseline_camera_front_24),
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colors.primaryVariant
+                                    )
+                                }
+                            }, modifier = Modifier.align(Alignment.TopCenter)
                             )
                         }
-                        ShopActionButtons(
-                            price = selectedStyle.price.toInt(),
-                            modifier = Modifier.align(Alignment.BottomCenter)
+                        FloatingActionButtons(
+                            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 40.dp),
+                            buttonOne = "Home Try-On",
+                            ButtonOneIcon = {
+                                Icon(
+                                    imageVector = Icons.Filled.Add,
+                                    contentDescription = null,
+                                    Modifier.size(12.dp)
+                                )
+                            },
+                            buttonTwo = "Buy from $${selectedStyle.price.toInt()}",
+                            buttonOneOnClick = {},
+                            buttonTwoOnClick = {},
                         )
                     }
                 },
@@ -234,8 +235,7 @@ fun WhatsIncluded(glass: Glasses) {
         )
         Text(
             text = "Everything that's included",
-            modifier = Modifier
-                .padding(horizontal = 15.dp, vertical = 20.dp),
+            modifier = Modifier.padding(horizontal = 15.dp, vertical = 20.dp),
             fontSize = 30.sp,
             fontStyle = FontStyle.Normal,
             fontWeight = FontWeight.Normal,
@@ -271,8 +271,7 @@ fun PrescriptionDescription(glass: Glasses) {
         )
         Text(
             text = "We offer a variety of prescription and lens types",
-            modifier = Modifier
-                .padding(horizontal = 15.dp, vertical = 20.dp),
+            modifier = Modifier.padding(horizontal = 15.dp, vertical = 20.dp),
             fontSize = 30.sp,
             fontStyle = FontStyle.Normal,
             fontWeight = FontWeight.Normal,
@@ -358,8 +357,7 @@ fun WidthDescription(glass: Glasses) {
         )
         Text(
             text = "${glass.brand} is available in extra narrow, narrow, medium, wide, and extra wide",
-            modifier = Modifier
-                .padding(horizontal = 15.dp, vertical = 20.dp),
+            modifier = Modifier.padding(horizontal = 15.dp, vertical = 20.dp),
             fontSize = 30.sp,
             fontStyle = FontStyle.Normal,
             fontWeight = FontWeight.Normal,
@@ -503,7 +501,8 @@ fun BasicDescription(glass: Glasses) {
 @Composable
 fun DescriptionBullet(text: String) {
     Row(
-        horizontalArrangement = Arrangement.Center, modifier = Modifier
+        horizontalArrangement = Arrangement.Center,
+        modifier = Modifier
             .padding(horizontal = 15.dp)
             .padding(bottom = 14.dp, top = 14.dp)
             .wrapContentSize(Alignment.Center)
@@ -526,52 +525,12 @@ fun DescriptionBullet(text: String) {
 }
 
 @Composable
-fun ShopActionButtons(price: Int, modifier: Modifier) {
-    val configuration = LocalConfiguration.current
-    val halfWidth = configuration.screenWidthDp / 2
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(bottom = 40.dp), horizontalArrangement = Arrangement.SpaceEvenly
-    ) {
-        ExtendedFloatingActionButton(text = {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = null,
-                    Modifier.size(12.dp)
-                )
-                Text(text = "Home Try-On", fontSize = 18.sp)
-            }
-        }, onClick = { /*TODO*/ },
-            modifier = Modifier
-                .height(56.dp)
-                .width(halfWidth.dp)
-                .padding(start = 10.dp, end = 5.dp),
-            backgroundColor = MaterialTheme.colors.primaryVariant,
-            contentColor = Color.White
-        )
-        ExtendedFloatingActionButton(text = {
-            Text(text = "Buy from $${price.toInt()}", fontSize = 18.sp)
-        }, onClick = { /*TODO*/ },
-            modifier = Modifier
-                .height(56.dp)
-                .width(halfWidth.dp)
-                .padding(end = 10.dp, start = 5.dp),
-            backgroundColor = MaterialTheme.colors.primary,
-            contentColor = Color.White
-        )
-    }
-}
-
-@Composable
 fun PriceDescription(price: Int) {
     Text(buildAnnotatedString {
         append("Starting at $$price, including prescription lenses")
         withStyle(
             style = SpanStyle(
-                color = MaterialTheme.colors.primaryVariant,
-                fontWeight = FontWeight.Bold
+                color = MaterialTheme.colors.primaryVariant, fontWeight = FontWeight.Bold
             )
         ) {
             append(" or 4 payements of $${ceil(price / 4.0).toInt()} with Affirm")
@@ -590,9 +549,7 @@ fun GlassNameContainer(
         mutableStateOf(style.isFavorite)
     }
     Row(
-        modifier = modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+        modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Column {
             Text(brand, textAlign = TextAlign.Center, style = MaterialTheme.typography.h4)
@@ -631,10 +588,9 @@ fun DetailHeader(selectedImagesIndicator: List<Boolean>, onBack: () -> Unit) {
                 val indicatorColor = if (it) Color.Gray else MaterialTheme.colors.onBackground
                 Canvas(modifier = Modifier
                     .size(13.dp)
-                    .padding(end = 6.dp),
-                    onDraw = {
-                        drawCircle(color = indicatorColor)
-                    })
+                    .padding(end = 6.dp), onDraw = {
+                    drawCircle(color = indicatorColor)
+                })
             }
         }
     }
@@ -654,7 +610,9 @@ fun HorizontalGlassScroller(glassImages: List<Int>, onPageSelected: (page: Int) 
     val configuration = LocalConfiguration.current
 
     HorizontalPager(
-        count = 3, state = pagerState, modifier = Modifier
+        count = 3,
+        state = pagerState,
+        modifier = Modifier
             .fillMaxWidth()
             .height((configuration.screenHeightDp / 2.5).dp)
             .background(Color.Blue)
@@ -665,23 +623,6 @@ fun HorizontalGlassScroller(glassImages: List<Int>, onPageSelected: (page: Int) 
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.FillWidth
-        )
-    }
-}
-
-@Composable
-fun CloseButton(onSelect: () -> Unit) {
-    IconButton(
-        onClick = {
-            Log.i("CloseButton", " onPressed");
-            onSelect()
-
-        }, modifier = Modifier.padding(start = 8.dp)
-    ) {
-        Icon(
-            Icons.Filled.Close,
-            contentDescription = null,
-            tint = MaterialTheme.colors.primary
         )
     }
 }

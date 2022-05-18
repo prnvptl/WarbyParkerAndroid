@@ -44,10 +44,14 @@ class EyeGlassesViewModel : ViewModel(), Parcelable {
                     style.isFavorite = glassStyle.isFavorite
                 }
             }
-            _favoritesCount.postValue(getFavoritesCount())
         }
+        _favoritesCount.value = getFavoritesCount()
     }
 
+    fun updateCount() {
+        _favoritesCount.value = getFavoritesCount()
+    }
+    
     private fun getFavoritesCount(): Int {
         val favPredicate: (GlassStyle) -> Boolean = { it.isFavorite }
         var favCount = 0
