@@ -6,7 +6,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,12 +28,14 @@ import com.example.warbyparkerandroid.R
 import com.example.warbyparkerandroid.data.model.GlassStyle
 import com.example.warbyparkerandroid.data.model.Glasses
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GlassesList(
     state: LazyListState,
     glasses: List<Glasses>,
     onUpdateStyle: (style: GlassStyle) -> Unit,
     showHeader: Boolean = true,
+    modifier: Modifier = Modifier,
     onGlassSelect: () -> Intent
 ) {
     LazyColumn(
@@ -58,7 +62,7 @@ fun GlassesList(
                 enter = slideInVertically(initialOffsetY = { 3000 }) + fadeIn(tween(3000)),
                 exit = shrinkVertically()
             ) {
-                GlassesItem(glasses = it, onFavoriteClick = { style -> onUpdateStyle(style) }) {
+                GlassesItem(glasses = it, modifier =  Modifier.animateItemPlacement(), onFavoriteClick = { style -> onUpdateStyle(style) }) {
                     onGlassSelect()
                 }
             }
@@ -71,6 +75,7 @@ fun GlassesList(
 fun GlassesItem(
     glasses: Glasses,
     onFavoriteClick: (style: GlassStyle) -> Unit,
+    modifier: Modifier = Modifier,
     onGlassSelect: () -> Intent
 ) {
     val context = LocalContext.current

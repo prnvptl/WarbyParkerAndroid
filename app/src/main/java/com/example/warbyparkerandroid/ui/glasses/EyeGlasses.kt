@@ -5,11 +5,12 @@ import android.content.Intent
 import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -19,13 +20,18 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.warbyparkerandroid.R
 import com.example.warbyparkerandroid.ui.common.GlassesList
 import com.example.warbyparkerandroid.ui.virtualtryon.AugmentedFaceActivity
@@ -33,7 +39,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun Glasses(
     onBack: () -> Unit,
@@ -42,7 +48,12 @@ fun Glasses(
     viewModel: EyeGlassesViewModel
 ) {
     val context = LocalContext.current
-
+    var searchState by remember {
+        mutableStateOf(false)
+    }
+    var searchTerm by remember {
+        mutableStateOf("")
+    }
     val state = rememberLazyListState()
     val firstItemVisible by remember {
         derivedStateOf {
@@ -77,14 +88,28 @@ fun Glasses(
     ) {
         Scaffold(
             topBar = {
-                CenterTopAppBar(firstItemVisible, onBack = onBack) {
-                    hideBottomNav()
-                    scope.launch {
-                        delay(300)
-                        modalState.animateTo(ModalBottomSheetValue.Expanded)
+                if (searchState) {
+                    SearchTopBar(searchTerm, onSearch = {
+                        searchTerm = it
+                        viewModel.search(searchTerm)
+                    }) {
+                        searchState = false
+                        searchTerm = ""
+                        viewModel.search("")
+                    }
+                } else {
+                    CenterTopAppBar(
+                        firstItemVisible,
+                        onBack = onBack,
+                        onSearchClick = { searchState = true }) {
+                        hideBottomNav()
+                        scope.launch {
+                            delay(300)
+                            modalState.animateTo(ModalBottomSheetValue.Expanded)
+                        }
                     }
                 }
-            }
+            },
         ) {
             when (uiState) {
                 EyeGlassesUiState.Loading -> {
@@ -97,16 +122,26 @@ fun Glasses(
             }
             val intent = Intent(context, AugmentedFaceActivity::class.java)
             intent.putExtra("view_model", viewModel)
+
             AnimatedVisibility(
                 visible = uiState == EyeGlassesUiState.Success,
                 enter = slideInVertically(initialOffsetY = { 3000 }) + fadeIn(tween(3000)),
                 exit = shrinkVertically()
             ) {
-                GlassesList(
-                    state,
-                    glasses,
-                    onUpdateStyle = { viewModel.update(it) },
-                    onGlassSelect = { intent })
+                Box(
+                ) {
+                    GlassesList(
+                        state,
+                        glasses,
+                        onUpdateStyle = { viewModel.update(it) },
+                        onGlassSelect = { intent })
+                    if (searchState && searchTerm.isBlank()) {
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = Color.White.copy(alpha = .9f)
+                        ) {}
+                    }
+                }
             }
         }
     }
@@ -116,6 +151,7 @@ fun Glasses(
 fun CenterTopAppBar(
     isFirstItemVisible: Boolean,
     onBack: () -> Unit,
+    onSearchClick: () -> Unit,
     onFiltersClick: () -> Unit,
 ) {
     val tintColor = MaterialTheme.colors.primary
@@ -151,7 +187,7 @@ fun CenterTopAppBar(
                     tint = tintColor
                 )
             }
-            IconButton(onClick = { }) {
+            IconButton(onClick = { onSearchClick() }) {
                 Icon(
                     imageVector = Icons.Filled.Search,
                     contentDescription = null,
@@ -161,5 +197,58 @@ fun CenterTopAppBar(
         },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.White)
     )
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun SearchTopBar(term: String, onSearch: (term: String) -> Unit, onCancel: () -> Unit) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusRequester = remember { FocusRequester() }
+    TopAppBar(
+        title = {
+            Text("")
+            TextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester),
+                value = term,
+                onValueChange = { onSearch(it) },
+                placeholder = {
+                    Text(text = "Search Eyeglasses")
+                },
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedIndicatorColor = Color.Transparent,
+                    cursorColor = MaterialTheme.colors.primaryVariant,
+                    placeholderColor = Color.Gray
+                ),
+                maxLines = 1,
+                singleLine = true,
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = androidx.compose.ui.text.input.ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = {
+                    onSearch(term)
+                    keyboardController?.hide()
+                }),
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = { }) {
+                Icon(Icons.Filled.Search, contentDescription = null, tint = Color.LightGray)
+            }
+        },
+        actions = {
+            Text("Cancel",
+                style = MaterialTheme.typography.button,
+                color = MaterialTheme.colors.primaryVariant,
+                fontSize = 18.sp,
+                modifier = Modifier
+                    .padding(end = 14.dp)
+                    .clickable {
+                        onCancel()
+                    })
+        },
+    )
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
 }
 
