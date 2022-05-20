@@ -6,9 +6,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.LocalElevationOverlay
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -19,6 +17,7 @@ import com.example.warbyparkerandroid.ui.bottomnavigation.Route
 import com.example.warbyparkerandroid.ui.bottomnavigation.Screens
 import com.example.warbyparkerandroid.ui.bottomnavigation.WPBottomNavBar
 import com.example.warbyparkerandroid.ui.cart.Cart
+import com.example.warbyparkerandroid.ui.contacts.Contacts
 import com.example.warbyparkerandroid.ui.favorites.Favorites
 import com.example.warbyparkerandroid.ui.glasses.EyeGlassesViewModel
 import com.example.warbyparkerandroid.ui.glasses.Glasses
@@ -29,19 +28,17 @@ import com.example.warbyparkerandroid.ui.theme.WarbyParkerAndroidTheme
 fun RootScreen() {
     val navController = rememberNavController()
     val viewModel: EyeGlassesViewModel = viewModel()
-//    val bottomBarState = rememberSaveable { (mutableStateOf(true)) }
     WarbyParkerAndroidTheme {
         var showBottomBar by remember { mutableStateOf(true) }
-//        val favCount = viewModel.favoritesCount
         CompositionLocalProvider(LocalElevationOverlay provides null) {
             Scaffold(bottomBar = {
-                    AnimatedVisibility(
-                        visible = showBottomBar,
-                        enter = slideInVertically(initialOffsetY = { it }),
-                        exit = slideOutVertically(targetOffsetY = { it }),
-                    ){
-                        WPBottomNavBar(navController = navController, viewModel)
-                    }
+                AnimatedVisibility(
+                    visible = showBottomBar,
+                    enter = slideInVertically(initialOffsetY = { it }),
+                    exit = slideOutVertically(targetOffsetY = { it }),
+                ) {
+                    WPBottomNavBar(navController = navController, viewModel)
+                }
 
             }) { innerPadding ->
                 NavHost(
@@ -51,14 +48,18 @@ fun RootScreen() {
                 ) {
                     composable(Screens.Shop.route) {
                         showBottomBar = true
+//                        Contacts()
                         HomeScreen(onEyeglassesShopClick = {
                             navController.navigate(
                                 Route.EYEGLASSES.name
                             )
+                        }, onContactsClick = {
+                            navController.navigate(
+                                Route.CONTACTS.name
+                            )
                         })
                     }
                     composable(Route.EYEGLASSES.name) {
-//                        showBottomBar = true
                         Glasses(
                             onBack = { navController.popBackStack() },
                             showBottomNav = { showBottomBar = true },
@@ -66,18 +67,27 @@ fun RootScreen() {
                             viewModel = viewModel
                         )
                     }
+                    composable(Route.CONTACTS.name) {
+                        Contacts(onBack = { navController.popBackStack() })
+                    }
                     composable(Screens.Favorites.route) {
-                        showBottomBar = true
-                        Favorites(viewModel) {
+                        Favorites(
+                            viewModel,
+                            showBottomNav = { showBottomBar = true },
+                            hideBottomNav = { showBottomBar = false },
+                        ) {
                             navController.navigate(Route.SHOP.name)
                         }
                     }
                     composable(Screens.Account.route) {
-                        showBottomBar = true
-                        Account() }
+                        Account(
+                            showBottomNav = { showBottomBar = true },
+                            hideBottomNav = { showBottomBar = false },
+                        )
+                    }
                     composable(Screens.Cart.route) {
                         showBottomBar = false
-                        Cart(onBack = { navController.popBackStack() },)
+                        Cart(onBack = { navController.popBackStack() })
                     }
                 }
             }

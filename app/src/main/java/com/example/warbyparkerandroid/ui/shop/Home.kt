@@ -31,13 +31,14 @@ import com.example.warbyparkerandroid.ui.theme.WarbyParkerAndroidTheme
 
 @Composable
 fun HomeScreen(
-    onEyeglassesShopClick: () -> Unit
+    onEyeglassesShopClick: () -> Unit,
+    onContactsClick: () -> Unit,
 ) {
     val shopItems = listOf(
         ShopItem(R.drawable.trialglasses, false, onEyeglassesShopClick),
         ShopItem(R.drawable.eyeglasses_header, false, onEyeglassesShopClick),
         ShopItem(R.drawable.sunglasses, false, onEyeglassesShopClick),
-        ShopItem(R.drawable.lenses, true, onEyeglassesShopClick),
+        ShopItem(R.drawable.lenses, true, onContactsClick),
         ShopItem(R.drawable.accessories, true, onEyeglassesShopClick),
         ShopItem(R.drawable.giftcards, true, onEyeglassesShopClick)
     )
@@ -61,7 +62,12 @@ fun ShopItemCard(item: ShopItem, isScrolling: Boolean) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { checkedState = !checkedState }
+            .clickable {
+                checkedState = !checkedState
+                if(item.isUnisex) {
+                    item.onShopClick()
+                }
+            }
             .wrapContentSize(align = Alignment.Center)
             .clip(MaterialTheme.shapes.medium),
         contentAlignment = Alignment.Center
@@ -82,6 +88,7 @@ fun ShopItemCard(item: ShopItem, isScrolling: Boolean) {
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
                     modifier = Modifier
                         .padding(10.dp)
+                        .width(175.dp)
                         .clip(MaterialTheme.shapes.large),
                     onClick = { item.onShopClick() }) {
                     Text(text = "Shop Men")
@@ -90,10 +97,10 @@ fun ShopItemCard(item: ShopItem, isScrolling: Boolean) {
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
                     modifier = Modifier
                         .padding(10.dp)
-                        .clip(MaterialTheme.shapes.large)
-                        .background(Color.White),
+                        .width(175.dp)
+                        .clip(MaterialTheme.shapes.large),
                     onClick = { item.onShopClick() }) {
-                    Text(text = "Shop Women", style = MaterialTheme.typography.button)
+                    Text(text = "Shop Women")
                 }
             }
         }
@@ -104,6 +111,6 @@ fun ShopItemCard(item: ShopItem, isScrolling: Boolean) {
 @Composable
 fun HomeScreenPreview() {
     WarbyParkerAndroidTheme {
-        HomeScreen({})
+        HomeScreen({}, {})
     }
 }

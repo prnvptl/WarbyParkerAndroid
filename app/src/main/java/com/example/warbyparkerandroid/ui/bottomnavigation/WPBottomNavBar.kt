@@ -52,6 +52,12 @@ fun WPBottomNavBar(
                     } == true &&
                             (screen.route == Route.SHOP.name)
                 }
+                if (!selected) {
+                    selected = currentDestination?.hierarchy?.any {
+                        it.route == Route.CONTACTS.name
+                    } == true &&
+                            (screen.route == Route.SHOP.name)
+                }
                 val tintColor = if (selected) MaterialTheme.colors.primary else Color.Gray
                 BottomNavigationItem(
                     icon = {
@@ -63,7 +69,21 @@ fun WPBottomNavBar(
                                         color = Color.White
                                     )
                                 }
-
+                            }) {
+                                Icon(
+                                    painterResource(id = screen.iconId),
+                                    contentDescription = null,
+                                    tint = tintColor,
+                                )
+                            }
+                        } else if (screen.route == Route.CART.name) {
+                            BadgedBox(badge = {
+                                Badge(backgroundColor = MaterialTheme.colors.primaryVariant) {
+                                    Text(
+                                        "2",
+                                        color = Color.White
+                                    )
+                                }
                             }) {
                                 Icon(
                                     painterResource(id = screen.iconId),

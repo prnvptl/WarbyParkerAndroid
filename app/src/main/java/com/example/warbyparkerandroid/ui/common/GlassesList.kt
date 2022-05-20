@@ -55,7 +55,7 @@ fun GlassesList(
             }) {
             AnimatedVisibility(
                 it.visible,
-                enter = slideInVertically(initialOffsetY = { 300 }) + fadeIn(tween(1500)),
+                enter = slideInVertically(initialOffsetY = { 300 }) + fadeIn(tween(300)),
                 exit = shrinkVertically()
             ) {
                 GlassesItem(glasses = it, onFavoriteClick = { style -> onUpdateStyle(style) }) {

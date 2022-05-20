@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,12 +30,18 @@ import androidx.compose.ui.unit.sp
 import com.example.warbyparkerandroid.R
 import com.example.warbyparkerandroid.data.model.GlassStyle
 import com.example.warbyparkerandroid.data.model.Glasses
+import com.example.warbyparkerandroid.ui.common.CloseButton
 import com.example.warbyparkerandroid.ui.common.GlassesList
+import com.example.warbyparkerandroid.ui.glasses.CollapsableHandle
 import com.example.warbyparkerandroid.ui.glasses.EyeGlassesViewModel
+import com.example.warbyparkerandroid.ui.login.SignIn
 import com.example.warbyparkerandroid.ui.virtualtryon.AugmentedFaceActivity
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
-fun Favorites(viewModel: EyeGlassesViewModel, onShopClicked: () -> Unit) {
+fun Favorites(viewModel: EyeGlassesViewModel,     hideBottomNav: () -> Unit,
+              showBottomNav: () -> Unit, onShopClicked: () -> Unit) {
     val context = LocalContext.current
     val glasses by viewModel.eyeGlasses.observeAsState(initial = emptyList())
     val favState by viewModel.favoritesCount.observeAsState()
@@ -44,7 +51,7 @@ fun Favorites(viewModel: EyeGlassesViewModel, onShopClicked: () -> Unit) {
     }
 
     if (favState!! <= 0) {
-        FavoriteEmptyState(onShopClicked)
+        FavoriteEmptyState(hideBottomNav, showBottomNav, onShopClicked)
     } else {
         FavoritesContent(glasses = glasses, viewModel)
     }
@@ -86,50 +93,77 @@ fun FavoritesContent(glasses: List<Glasses>, viewModel: EyeGlassesViewModel) {
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun FavoriteEmptyState(onShopClicked: () -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .wrapContentSize(),
-        verticalArrangement = Arrangement.spacedBy(15.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text(
-            "No favorites to be found",
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.h5,
-            fontWeight = FontWeight.SemiBold
-        )
-        Text("(Click below to change that.)", textAlign = TextAlign.Center, fontSize = 18.sp)
-        Image(
-            painter = painterResource(id = R.drawable.no_favorites_img),
-            contentDescription = null,
-            modifier = Modifier.padding(vertical = 40.dp)
-        )
-        Button(
-            onClick = { onShopClicked() },
-            shape = MaterialTheme.shapes.large,
-            modifier = Modifier
-                .width(175.dp)
-                .height(40.dp),
-            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primaryVariant)
-        ) {
-            Text("Start Shopping", color = Color.White)
-        }
-        val caption = buildAnnotatedString {
-            append("Already have favorites? ")
-            withStyle(
-                style = SpanStyle(
-                    color = MaterialTheme.colors.primaryVariant,
-                    fontWeight = FontWeight.SemiBold
-                )
-            ) {
-                append("Sign In.")
+fun FavoriteEmptyState(    hideBottomNav: () -> Unit,
+                           showBottomNav: () -> Unit,onShopClicked: () -> Unit) {
+    val modalState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden,
+        confirmStateChange = {
+            if (it == ModalBottomSheetValue.Hidden) {
+                showBottomNav()
             }
-        }
-        Text(caption, fontSize = 20.sp, modifier = Modifier.clickable {
-
+            it != ModalBottomSheetValue.HalfExpanded
         })
+    val scope = rememberCoroutineScope()
+    ModalBottomSheetLayout(
+        sheetState = modalState, sheetElevation = 8.dp, sheetContent = {
+            CollapsableHandle()
+            CloseButton(modifier = Modifier.padding(top = 12.dp, start = 12.dp)) {
+                scope.launch {
+                    modalState.animateTo(ModalBottomSheetValue.Hidden)
+                    showBottomNav()
+                }
+            }
+            SignIn()
+        }, sheetBackgroundColor = Color(0xFFf8f7f9)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .wrapContentSize(),
+            verticalArrangement = Arrangement.spacedBy(15.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                "No favorites to be found",
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.h5,
+                fontWeight = FontWeight.SemiBold
+            )
+            Text("(Click below to change that.)", textAlign = TextAlign.Center, fontSize = 18.sp)
+            Image(
+                painter = painterResource(id = R.drawable.no_favorites_img),
+                contentDescription = null,
+                modifier = Modifier.padding(vertical = 40.dp)
+            )
+            Button(
+                onClick = { onShopClicked() },
+                shape = MaterialTheme.shapes.large,
+                modifier = Modifier
+                    .width(175.dp)
+                    .height(40.dp),
+                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primaryVariant)
+            ) {
+                Text("Start Shopping", color = Color.White)
+            }
+            val caption = buildAnnotatedString {
+                append("Already have favorites? ")
+                withStyle(
+                    style = SpanStyle(
+                        color = MaterialTheme.colors.primaryVariant,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                ) {
+                    append("Sign In.")
+                }
+            }
+            Text(caption, fontSize = 20.sp, modifier = Modifier.clickable {
+                scope.launch {
+                    hideBottomNav()
+                    delay(300)
+                    modalState.animateTo(ModalBottomSheetValue.Expanded)
+                }
+            })
+        }
     }
 }

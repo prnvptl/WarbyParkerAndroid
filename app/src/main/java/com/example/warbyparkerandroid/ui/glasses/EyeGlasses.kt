@@ -1,13 +1,15 @@
 package com.example.warbyparkerandroid.ui.glasses
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -26,14 +28,12 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.warbyparkerandroid.R
-import com.example.warbyparkerandroid.data.model.GlassStyle
-import com.example.warbyparkerandroid.data.model.Glasses
-import com.example.warbyparkerandroid.ui.common.ColorStyledButtonList
-import com.example.warbyparkerandroid.ui.common.FavoriteButton
 import com.example.warbyparkerandroid.ui.common.GlassesList
 import com.example.warbyparkerandroid.ui.virtualtryon.AugmentedFaceActivity
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Glasses(
@@ -61,6 +61,7 @@ fun Glasses(
     )
     val scope = rememberCoroutineScope()
     val glasses by viewModel.eyeGlasses.observeAsState(initial = emptyList())
+    val uiState by viewModel._uiState.observeAsState(initial = true)
     SideEffect {
         Log.i("Glasses~~! ", "favState.toString()")
         viewModel.updateCount()
@@ -79,20 +80,33 @@ fun Glasses(
             topBar = {
                 CenterTopAppBar(firstItemVisible, onBack = onBack) {
                     hideBottomNav()
-                    scope.launch { modalState.animateTo(ModalBottomSheetValue.Expanded) }
+
+                    scope.launch {
+                        delay(300)
+                        modalState.animateTo(ModalBottomSheetValue.Expanded)
+                    }
                 }
             }
         ) {
+            when (uiState) {
+                EyeGlassesUiState.Loading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .wrapContentSize(Alignment.Center)
+                    )
+                }
+                EyeGlassesUiState.Success -> {
+                    val intent = Intent(context, AugmentedFaceActivity::class.java)
+                    intent.putExtra("view_model", viewModel)
+                    GlassesList(
+                        state,
+                        glasses,
+                        onUpdateStyle = { viewModel.update(it) },
+                        onGlassSelect = { intent })
+                }
+            }
 
-
-            Log.i("padding", "$it")
-            val intent = Intent(context, AugmentedFaceActivity::class.java)
-            intent.putExtra("view_model", viewModel)
-            GlassesList(
-                state,
-                glasses,
-                onUpdateStyle = { viewModel.update(it) },
-                onGlassSelect = { intent })
         }
     }
 }

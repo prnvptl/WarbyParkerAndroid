@@ -6,12 +6,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
+import androidx.compose.material.*
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material3.*
+import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,12 +28,28 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.warbyparkerandroid.R
+import com.example.warbyparkerandroid.ui.common.CloseButton
+import com.example.warbyparkerandroid.ui.glasses.CollapsableHandle
+import com.example.warbyparkerandroid.ui.login.SignIn
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 data class AccountItem(val icon: Int, val title: String, val onClick: () -> Unit)
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-fun Account() {
+fun Account(
+    hideBottomNav: () -> Unit,
+    showBottomNav: () -> Unit,
+) {
+    val modalState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden,
+        confirmStateChange = {
+            if (it == ModalBottomSheetValue.Hidden) {
+                showBottomNav()
+            }
+            it != ModalBottomSheetValue.HalfExpanded
+        })
+    val scope = rememberCoroutineScope()
     val accountItems = listOf<AccountItem>(
         AccountItem(icon = R.drawable.pd_icon, title = "Measure pupillary distance\n(PD)", {}),
         AccountItem(icon = R.drawable.prescription_icon, title = "Get a prescription", {}),
@@ -41,31 +59,48 @@ fun Account() {
         AccountItem(icon = R.drawable.pencil_icon, title = "Write a review", {})
 
     )
-    Scaffold(
-        topBar = {
+    ModalBottomSheetLayout(
+        sheetState = modalState, sheetElevation = 8.dp, sheetContent = {
+            CollapsableHandle()
+            CloseButton(modifier = Modifier.padding(top = 12.dp, start = 12.dp)) {
+                scope.launch {
+                    modalState.animateTo(ModalBottomSheetValue.Hidden)
+                    showBottomNav()
+                }
+            }
+            SignIn()
+        }, sheetBackgroundColor = Color(0xFFf8f7f9)
+    ) {
+        Scaffold(topBar = {
             CenterAlignedTopAppBar(
                 title = { Text(text = "Account", style = MaterialTheme.typography.h5) },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = Color.White
                 ),
             )
-        }
-    ) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-        ) {
-            item {
-                AccountHeader()
-            }
-            items(accountItems) {
-                AccountListItem(icon = it.icon, title = it.title) {
-                    it.onClick()
+        }) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
+            ) {
+                item {
+                    AccountHeader() {
+                        scope.launch {
+                            hideBottomNav()
+                            delay(300)
+                            modalState.animateTo(ModalBottomSheetValue.Expanded)
+                        }
+                    }
                 }
-            }
-            item {
-                Footer()
+                items(accountItems) {
+                    AccountListItem(icon = it.icon, title = it.title) {
+                        it.onClick()
+                    }
+                }
+                item {
+                    Footer()
+                }
             }
         }
     }
@@ -74,7 +109,10 @@ fun Account() {
 @Composable
 fun Footer() {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(top = 16.dp).background(Color.White),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp)
+            .background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -138,31 +176,23 @@ fun Footer() {
                 fontWeight = FontWeight.SemiBold
             )
             Text(
-                text = "Privacy Policy",
-                style = androidx.compose.ui.text.TextStyle(
-                    textDecoration = TextDecoration.Underline,
-                    fontSize = 16.sp
+                text = "Privacy Policy", style = androidx.compose.ui.text.TextStyle(
+                    textDecoration = TextDecoration.Underline, fontSize = 16.sp
                 )
             )
             Text(
-                text = "Notice of Privacy Practices",
-                style = androidx.compose.ui.text.TextStyle(
-                    textDecoration = TextDecoration.Underline,
-                    fontSize = 16.sp
+                text = "Notice of Privacy Practices", style = androidx.compose.ui.text.TextStyle(
+                    textDecoration = TextDecoration.Underline, fontSize = 16.sp
                 )
             )
             Text(
-                text = "Terms of Use",
-                style = androidx.compose.ui.text.TextStyle(
-                    textDecoration = TextDecoration.Underline,
-                    fontSize = 16.sp
+                text = "Terms of Use", style = androidx.compose.ui.text.TextStyle(
+                    textDecoration = TextDecoration.Underline, fontSize = 16.sp
                 )
             )
             Text(
-                text = "Accessibility",
-                style = androidx.compose.ui.text.TextStyle(
-                    textDecoration = TextDecoration.Underline,
-                    fontSize = 16.sp
+                text = "Accessibility", style = androidx.compose.ui.text.TextStyle(
+                    textDecoration = TextDecoration.Underline, fontSize = 16.sp
                 )
             )
             Text(text = " Version 25.0.0.0/1234", fontWeight = FontWeight.ExtraLight)
@@ -192,7 +222,8 @@ fun AccountListItem(icon: Int, title: String, onClick: () -> Unit) {
                 )
 
                 Text(
-                    title, textAlign = TextAlign.Left,
+                    title,
+                    textAlign = TextAlign.Left,
                     fontSize = 24.sp,
                     fontStyle = FontStyle.Normal,
                     fontWeight = FontWeight.Normal,
@@ -217,7 +248,7 @@ fun AccountListItem(icon: Int, title: String, onClick: () -> Unit) {
 }
 
 @Composable
-fun AccountHeader() {
+fun AccountHeader(onSignIn: () -> Unit) {
     Box(modifier = Modifier.fillMaxWidth()) {
         Image(
             painter = painterResource(id = R.drawable.accounts_header),
@@ -246,7 +277,7 @@ fun AccountHeader() {
                     .padding(top = 36.dp)
             ) {
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = { onSignIn() },
                     modifier = Modifier
                         .height(40.dp)
                         .width(175.dp)
@@ -257,7 +288,7 @@ fun AccountHeader() {
                     Text("Create Account", color = Color.White, fontSize = 18.sp)
                 }
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = { onSignIn() },
                     modifier = Modifier
                         .height(40.dp)
                         .width(175.dp)
