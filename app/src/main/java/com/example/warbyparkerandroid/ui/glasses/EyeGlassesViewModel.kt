@@ -36,11 +36,11 @@ class EyeGlassesViewModel : ViewModel(), Parcelable {
         _eyeGlasses.value = AllGlasses.toMutableStateList()
         viewModelScope.launch {
             _uiState.value = EyeGlassesUiState.Loading
-            delay(3000)
-            _eyeGlasses.value?.forEach {
-                it.visible = MutableTransitionState(false).apply { targetState = true }
-            }
+            delay(3500)
             _uiState.value = EyeGlassesUiState.Success
+            _eyeGlasses.value?.forEach {
+                it.visible = true
+            }
         }
     }
 
@@ -81,7 +81,7 @@ class EyeGlassesViewModel : ViewModel(), Parcelable {
 
     override fun onCleared() {
         _eyeGlasses.value?.forEach {
-            it.visible = MutableTransitionState(false)
+            it.visible = false
         }
         _uiState.value = EyeGlassesUiState.Loading
         super.onCleared()

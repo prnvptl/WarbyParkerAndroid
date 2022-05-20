@@ -22,7 +22,7 @@ class ContactsViewModel : ViewModel() {
         viewModelScope.launch {
             delay(300)
             contacts.value?.forEach {
-                it.visible = MutableTransitionState<Boolean>(false).apply { targetState = true }
+                it.visible = true
             }
         }
     }
@@ -39,7 +39,7 @@ class ContactsViewModel : ViewModel() {
 
     override fun onCleared() {
         contacts.value?.forEach {
-            it.visible = MutableTransitionState(false)
+            it.visible = false
         }
         super.onCleared()
     }

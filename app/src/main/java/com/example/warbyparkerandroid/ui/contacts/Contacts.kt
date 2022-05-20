@@ -177,7 +177,7 @@ fun Contacts(
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
                 items(contacts, key = { it.name }) {
                     AnimatedVisibility(
-                        visibleState = it.visible,
+                        visible = it.visible,
                         enter = slideInVertically { 300 } + fadeIn(tween(400)),
                         exit = slideOutVertically { 300 } + fadeOut(tween(400))
                     ) {

@@ -3,9 +3,8 @@ package com.example.warbyparkerandroid.ui.glasses
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.util.Log
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -80,7 +79,6 @@ fun Glasses(
             topBar = {
                 CenterTopAppBar(firstItemVisible, onBack = onBack) {
                     hideBottomNav()
-
                     scope.launch {
                         delay(300)
                         modalState.animateTo(ModalBottomSheetValue.Expanded)
@@ -96,17 +94,20 @@ fun Glasses(
                             .wrapContentSize(Alignment.Center)
                     )
                 }
-                EyeGlassesUiState.Success -> {
-                    val intent = Intent(context, AugmentedFaceActivity::class.java)
-                    intent.putExtra("view_model", viewModel)
-                    GlassesList(
-                        state,
-                        glasses,
-                        onUpdateStyle = { viewModel.update(it) },
-                        onGlassSelect = { intent })
-                }
             }
-
+            val intent = Intent(context, AugmentedFaceActivity::class.java)
+            intent.putExtra("view_model", viewModel)
+            AnimatedVisibility(
+                visible = uiState == EyeGlassesUiState.Success,
+                enter = slideInVertically(initialOffsetY = { 3000 }) + fadeIn(tween(3000)),
+                exit = shrinkVertically()
+            ) {
+                GlassesList(
+                    state,
+                    glasses,
+                    onUpdateStyle = { viewModel.update(it) },
+                    onGlassSelect = { intent })
+            }
         }
     }
 }
@@ -134,6 +135,7 @@ fun CenterTopAppBar(
                         .padding(10.dp)
                         .fillMaxWidth(),
                 )
+
             }
         },
         navigationIcon = {
@@ -149,7 +151,7 @@ fun CenterTopAppBar(
                     tint = tintColor
                 )
             }
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = { }) {
                 Icon(
                     imageVector = Icons.Filled.Search,
                     contentDescription = null,

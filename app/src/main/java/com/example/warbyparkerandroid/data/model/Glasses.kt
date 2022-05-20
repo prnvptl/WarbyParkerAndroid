@@ -12,7 +12,7 @@ data class Glasses(
     val description: String,
     var styles: ArrayList<GlassStyle>,
     val isStackPick: Boolean,
-    var visible: @RawValue MutableTransitionState<Boolean> = MutableTransitionState(false),
+    var visible: Boolean = false,
     val imageIds: List<Int>,
     val descriptionImg: Int,
     val virtualTryOnImg: Int,
