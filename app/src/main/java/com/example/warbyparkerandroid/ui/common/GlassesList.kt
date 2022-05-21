@@ -35,7 +35,6 @@ fun GlassesList(
     glasses: List<Glasses>,
     onUpdateStyle: (style: GlassStyle) -> Unit,
     showHeader: Boolean = true,
-    modifier: Modifier = Modifier,
     onGlassSelect: () -> Intent
 ) {
     LazyColumn(
@@ -60,7 +59,8 @@ fun GlassesList(
             AnimatedVisibility(
                 it.visible,
                 enter = slideInVertically(initialOffsetY = { 3000 }) + fadeIn(tween(3000)),
-                exit = shrinkVertically()
+                exit = shrinkVertically(),
+                modifier = Modifier.animateItemPlacement()
             ) {
                 GlassesItem(glasses = it, modifier =  Modifier.animateItemPlacement(), onFavoriteClick = { style -> onUpdateStyle(style) }) {
                     onGlassSelect()
