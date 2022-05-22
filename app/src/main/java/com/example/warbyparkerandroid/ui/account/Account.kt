@@ -2,6 +2,7 @@ package com.example.warbyparkerandroid.ui.account
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -40,9 +41,11 @@ data class AccountItem(val icon: Int, val title: String, val onClick: () -> Unit
 @Composable
 fun Account(
     hideBottomNav: () -> Unit,
+    onPDMeasurement: () -> Unit,
     showBottomNav: () -> Unit,
 ) {
-    val modalState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden,
+    val modalState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
         confirmStateChange = {
             if (it == ModalBottomSheetValue.Hidden) {
                 showBottomNav()
@@ -50,8 +53,9 @@ fun Account(
             it != ModalBottomSheetValue.HalfExpanded
         })
     val scope = rememberCoroutineScope()
-    val accountItems = listOf<AccountItem>(
-        AccountItem(icon = R.drawable.pd_icon, title = "Measure pupillary distance\n(PD)", {}),
+    val accountItems = listOf<AccountItem>(AccountItem(
+        icon = R.drawable.pd_icon, title = "Measure pupillary distance\n(PD)", onPDMeasurement
+    ),
         AccountItem(icon = R.drawable.prescription_icon, title = "Get a prescription", {}),
         AccountItem(icon = R.drawable.location_icon, title = "Locations", {}),
         AccountItem(icon = R.drawable.faq_icon, title = "FAQ", {}),
@@ -206,7 +210,8 @@ fun AccountListItem(icon: Int, title: String, onClick: () -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 22.dp),
+                .padding(vertical = 22.dp)
+                .clickable { onClick() },
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {

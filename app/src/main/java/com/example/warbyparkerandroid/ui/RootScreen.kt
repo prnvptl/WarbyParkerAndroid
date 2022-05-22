@@ -1,5 +1,6 @@
 package com.example.warbyparkerandroid.ui
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -21,6 +22,7 @@ import com.example.warbyparkerandroid.ui.contacts.Contacts
 import com.example.warbyparkerandroid.ui.favorites.Favorites
 import com.example.warbyparkerandroid.ui.glasses.EyeGlassesViewModel
 import com.example.warbyparkerandroid.ui.glasses.Glasses
+import com.example.warbyparkerandroid.ui.pdmeasure.PupillaryDistanceCamera
 import com.example.warbyparkerandroid.ui.shop.HomeScreen
 import com.example.warbyparkerandroid.ui.theme.WarbyParkerAndroidTheme
 
@@ -69,6 +71,14 @@ fun RootScreen() {
                     composable(Route.CONTACTS.name) {
                         Contacts(onBack = { navController.popBackStack() })
                     }
+                    composable(Route.PD_MEASUREMENT.name) {
+                        showBottomBar = false
+                        PupillaryDistanceCamera() {
+                            Log.i("HAHAHAHAH", "WTF")
+                            navController.popBackStack()
+                            showBottomBar = true
+                        }
+                    }
                     composable(Screens.Favorites.route) {
                         Favorites(
                             viewModel,
@@ -79,8 +89,10 @@ fun RootScreen() {
                         }
                     }
                     composable(Screens.Account.route) {
+                        showBottomBar = true
                         Account(
                             showBottomNav = { showBottomBar = true },
+                            onPDMeasurement = { navController.navigate(Route.PD_MEASUREMENT.name) },
                             hideBottomNav = { showBottomBar = false },
                         )
                     }

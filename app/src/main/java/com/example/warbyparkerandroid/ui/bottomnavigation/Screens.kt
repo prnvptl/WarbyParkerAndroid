@@ -14,6 +14,7 @@ enum class Route(route: String) {
     SHOP("shop"),
     EYEGLASSES("eyeglasses"),
     CONTACTS("contacts"),
+    PD_MEASUREMENT("pd_measurement"),
     FAVORITES("favorites"),
     ACCOUNT("account"),
     CART("cart")
