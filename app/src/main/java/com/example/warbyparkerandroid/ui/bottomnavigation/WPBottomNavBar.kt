@@ -1,14 +1,13 @@
 package com.example.warbyparkerandroid.ui.bottomnavigation
 
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -32,13 +31,13 @@ fun WPBottomNavBar(
         Screens.Account,
         Screens.Cart
     )
+    val favState by viewModel.uiState.collectAsState()
+
     CompositionLocalProvider(LocalElevationOverlay provides null) {
         BottomNavigation(
             backgroundColor = MaterialTheme.colors.background,
             modifier = Modifier.height(64.dp)
         ) {
-            val favState by viewModel.favoritesCount.observeAsState()
-            Log.i("favState ", favState.toString())
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
             items.forEach { screen ->
@@ -61,11 +60,11 @@ fun WPBottomNavBar(
                 val tintColor = if (selected) MaterialTheme.colors.primary else Color.Gray
                 BottomNavigationItem(
                     icon = {
-                        if (screen.route == Route.FAVORITES.name && favState!! > 0) {
+                        if (screen.route == Route.FAVORITES.name && favState.favoriteCount > 0) {
                             BadgedBox(badge = {
                                 Badge(backgroundColor = MaterialTheme.colors.primaryVariant) {
                                     Text(
-                                        favState.toString(),
+                                        favState.favoriteCount.toString(),
                                         color = Color.White
                                     )
                                 }

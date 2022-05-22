@@ -1,14 +1,8 @@
 package com.example.warbyparkerandroid.ui.common
 
 import android.content.Intent
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -43,7 +37,7 @@ fun GlassesList(
         horizontalAlignment = Alignment.CenterHorizontally,
         contentPadding = PaddingValues(8.dp),
     ) {
-        if(showHeader) {
+        if (showHeader) {
             item {
                 Text(
                     text = "Eyeglasses",
@@ -56,16 +50,13 @@ fun GlassesList(
             key = { glass ->
                 glass.id
             }) {
-            AnimatedVisibility(
-                it.visible,
-                enter = slideInVertically(initialOffsetY = { 3000 }) + fadeIn(tween(3000)),
-                exit = shrinkVertically(),
-                modifier = Modifier.animateItemPlacement()
-            ) {
-                GlassesItem(glasses = it, modifier =  Modifier.animateItemPlacement(), onFavoriteClick = { style -> onUpdateStyle(style) }) {
-                    onGlassSelect()
-                }
+            GlassesItem(
+                glasses = it,
+                modifier = Modifier.animateItemPlacement(),
+                onFavoriteClick = { style -> onUpdateStyle(style) }) {
+                onGlassSelect()
             }
+
         }
     }
 }

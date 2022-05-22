@@ -4,7 +4,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.KeyEvent
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.databinding.DataBindingUtil
@@ -15,7 +14,6 @@ import com.example.warbyparkerandroid.data.model.GlassStyle
 import com.example.warbyparkerandroid.data.model.Glasses
 import com.example.warbyparkerandroid.databinding.ActivityAugmentedFaceBinding
 import com.example.warbyparkerandroid.ui.glassdetail.GlassDetail
-import com.example.warbyparkerandroid.ui.glasses.EyeGlassesViewModel
 import com.google.ar.core.AugmentedFace
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.ArSceneView
@@ -35,8 +33,7 @@ class AugmentedFaceActivity : AppCompatActivity() {
     private var faceModel: ModelRenderable? = null
     private val facesNodes = HashMap<AugmentedFace, AugmentedFaceNode>()
     private var mViewBinding: ActivityAugmentedFaceBinding? = null
-//    val mViewModel: EyeGlassesViewModel by viewModels()
-
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mViewBinding = DataBindingUtil.setContentView<ActivityAugmentedFaceBinding>(
@@ -45,14 +42,13 @@ class AugmentedFaceActivity : AppCompatActivity() {
         )
         var glass: Glasses = intent.extras?.get("glass") as Glasses
         var style: GlassStyle = intent.extras?.get("glass_style") as GlassStyle
-        var viewModel: EyeGlassesViewModel = intent.extras?.get("view_model") as EyeGlassesViewModel
 
         mViewBinding?.apply {
             composeView.apply {
-                if (style != null && glass != null && viewModel != null) {
+                if (style != null && glass != null) {
                     setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
                     setContent {
-                        GlassDetail(glass, style, viewModel) { emulateBackPress() }
+                        GlassDetail(glass, style) { emulateBackPress() }
                     }
                 }
             }

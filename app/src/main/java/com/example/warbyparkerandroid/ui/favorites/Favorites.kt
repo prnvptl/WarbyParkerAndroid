@@ -2,7 +2,6 @@ package com.example.warbyparkerandroid.ui.favorites
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,9 +10,8 @@ import androidx.compose.material.*
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,20 +38,16 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun Favorites(viewModel: EyeGlassesViewModel,     hideBottomNav: () -> Unit,
-              showBottomNav: () -> Unit, onShopClicked: () -> Unit) {
-    val context = LocalContext.current
-    val glasses by viewModel.eyeGlasses.observeAsState(initial = emptyList())
-    val favState by viewModel.favoritesCount.observeAsState()
-    SideEffect {
-        Log.i("Favorites! ", favState.toString())
-        viewModel.updateCount()
-    }
-
-    if (favState!! <= 0) {
+fun Favorites(
+    viewModel: EyeGlassesViewModel, hideBottomNav: () -> Unit,
+    showBottomNav: () -> Unit, onShopClicked: () -> Unit
+) {
+    val viewModelUiState by viewModel.uiState.collectAsState()
+    if (viewModel.getFavoritesCount() <= 0) {
         FavoriteEmptyState(hideBottomNav, showBottomNav, onShopClicked)
     } else {
-        FavoritesContent(glasses = glasses, viewModel)
+        FavoritesContent(glasses = viewModelUiState.eyeGlasses, viewModel)
+
     }
 }
 
@@ -83,7 +77,7 @@ fun FavoritesContent(glasses: List<Glasses>, viewModel: EyeGlassesViewModel) {
         }
     ) {
         val intent = Intent(context, AugmentedFaceActivity::class.java)
-        intent.putExtra("view_model", viewModel)
+//        intent.putExtra("view_model", viewModel)
         GlassesList(
             state,
             favorites,
@@ -95,8 +89,10 @@ fun FavoritesContent(glasses: List<Glasses>, viewModel: EyeGlassesViewModel) {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun FavoriteEmptyState(    hideBottomNav: () -> Unit,
-                           showBottomNav: () -> Unit,onShopClicked: () -> Unit) {
+fun FavoriteEmptyState(
+    hideBottomNav: () -> Unit,
+    showBottomNav: () -> Unit, onShopClicked: () -> Unit
+) {
     val modalState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden,
         confirmStateChange = {
             if (it == ModalBottomSheetValue.Hidden) {

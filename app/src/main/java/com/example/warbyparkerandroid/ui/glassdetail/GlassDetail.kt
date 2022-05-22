@@ -35,9 +35,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.warbyparkerandroid.R
 import com.example.warbyparkerandroid.data.model.GlassStyle
 import com.example.warbyparkerandroid.data.model.Glasses
+import com.example.warbyparkerandroid.data.repository.GlassesRepositoryImpl
 import com.example.warbyparkerandroid.ui.common.CloseButton
 import com.example.warbyparkerandroid.ui.common.ColorStyledButtonList
 import com.example.warbyparkerandroid.ui.common.FavoriteButton
@@ -56,7 +58,11 @@ import kotlin.math.ceil
 fun GlassDetail(
     glass: Glasses,
     selectedStyle: GlassStyle,
-    viewModel: EyeGlassesViewModel,
+    viewModel: EyeGlassesViewModel = viewModel(
+        factory = EyeGlassesViewModel.provideFactory(
+            GlassesRepositoryImpl()
+        )
+    ),
     onNavBackPressed: () -> Unit
 ) {
     val context = LocalContext.current
@@ -202,7 +208,9 @@ fun GlassDetail(
                             )
                         }
                         FloatingActionButtons(
-                            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 40.dp),
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .padding(bottom = 40.dp),
                             buttonOne = "Home Try-On",
                             ButtonOneIcon = {
                                 Icon(

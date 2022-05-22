@@ -5,7 +5,6 @@ import android.content.Intent
 import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -18,7 +17,6 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -39,7 +37,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Glasses(
     onBack: () -> Unit,
@@ -47,6 +45,9 @@ fun Glasses(
     showBottomNav: () -> Unit,
     viewModel: EyeGlassesViewModel
 ) {
+
+    val viewModelUiState by viewModel.uiState.collectAsState()
+
     val context = LocalContext.current
     var searchState by remember {
         mutableStateOf(false)
@@ -70,12 +71,6 @@ fun Glasses(
         }
     )
     val scope = rememberCoroutineScope()
-    val glasses by viewModel.eyeGlasses.observeAsState(initial = emptyList())
-    val uiState by viewModel._uiState.observeAsState(initial = true)
-    SideEffect {
-        Log.i("Glasses~~! ", "favState.toString()")
-        viewModel.updateCount()
-    }
     ModalBottomSheetLayout(
         sheetState = modalState,
         sheetElevation = 8.dp,
@@ -111,8 +106,8 @@ fun Glasses(
                 }
             },
         ) {
-            when (uiState) {
-                EyeGlassesUiState.Loading -> {
+            when (viewModelUiState) {
+                is GlassesUiState.NoGlasses -> {
                     CircularProgressIndicator(
                         modifier = Modifier
                             .fillMaxSize()
@@ -121,18 +116,19 @@ fun Glasses(
                 }
             }
             val intent = Intent(context, AugmentedFaceActivity::class.java)
-            intent.putExtra("view_model", viewModel)
+//            intent.putExtra("view_model", viewModel)
 
             AnimatedVisibility(
-                visible = uiState == EyeGlassesUiState.Success,
+                visible = viewModelUiState is GlassesUiState.HasGlasses,
                 enter = slideInVertically(initialOffsetY = { 3000 }) + fadeIn(tween(3000)),
                 exit = shrinkVertically()
             ) {
                 Box(
                 ) {
+                    Log.i("SUCCESS", viewModelUiState.eyeGlasses.size.toString())
                     GlassesList(
                         state,
-                        glasses,
+                        viewModelUiState.eyeGlasses,
                         onUpdateStyle = { viewModel.update(it) },
                         onGlassSelect = { intent })
                     if (searchState && searchTerm.isBlank()) {

@@ -1,95 +1,141 @@
 package com.example.warbyparkerandroid.ui.glasses
 
-import android.os.Parcelable
 import android.util.Log
-import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.warbyparkerandroid.data.datasource.AllContacts
 import com.example.warbyparkerandroid.data.datasource.AllGlasses
+import com.example.warbyparkerandroid.data.datasource.Result
 import com.example.warbyparkerandroid.data.model.GlassStyle
 import com.example.warbyparkerandroid.data.model.Glasses
-import kotlinx.coroutines.delay
+import com.example.warbyparkerandroid.data.repository.GlassesRepository
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.parcelize.Parcelize
 
-@Parcelize
-class EyeGlassesViewModel : ViewModel(), Parcelable {
+/**
+ * UI state for the Eyeglasses route.
+ */
+sealed interface GlassesUiState {
+    val isLoading: Boolean
+    val isError: Boolean
+    val eyeGlasses: List<Glasses>
+    val favoriteCount: Int
 
-    private var _eyeGlasses = MutableLiveData<SnapshotStateList<Glasses>>()
-    val eyeGlasses get() = _eyeGlasses
+    data class NoGlasses(
+        override val isLoading: Boolean,
+        override val isError: Boolean,
+        override val eyeGlasses: List<Glasses>,
+        override val favoriteCount: Int,
+    ) : GlassesUiState
 
-    private var _favoritesCount = MutableLiveData<Int>(0)
-    val favoritesCount get() = _favoritesCount
+    data class HasGlasses(
+        override val isLoading: Boolean,
+        override val isError: Boolean,
+        override val eyeGlasses: List<Glasses>,
+        override val favoriteCount: Int,
+    ) : GlassesUiState
+}
 
-    var _uiState = MutableLiveData<EyeGlassesUiState>(null)
-        private set
+private data class GlassesViewModelState(
+    val isLoading: Boolean = false,
+    val eyeGlasses: List<Glasses> = listOf(),
+    val isError: Boolean = false,
+    val favoriteCount: Int = 0
+) {
+    fun toUiState(): GlassesUiState =
+        if (eyeGlasses.isEmpty()) {
+            GlassesUiState.NoGlasses(
+                isLoading = isLoading,
+                isError = isError,
+                eyeGlasses = eyeGlasses,
+                favoriteCount = favoriteCount
+            )
+        } else {
+            GlassesUiState.HasGlasses(
+                isLoading = isLoading,
+                isError = isError,
+                eyeGlasses = eyeGlasses,
+                favoriteCount = favoriteCount
+            )
+        }
+}
+
+class EyeGlassesViewModel(
+    private val glassesReposiory: GlassesRepository
+) : ViewModel() {
+    private val viewModelState = MutableStateFlow(GlassesViewModelState(isLoading = true))
+
+    val uiState = viewModelState.map { it.toUiState() }.stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        viewModelState.value.toUiState()
+    )
 
     init {
-        toggleGlassesVisibility()
-    }
-
-    private fun toggleGlassesVisibility() {
-        _eyeGlasses.value = AllGlasses.toMutableStateList()
+        viewModelState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
-            _uiState.value = EyeGlassesUiState.Loading
-            delay(3500)
-            _uiState.value = EyeGlassesUiState.Success
-            _eyeGlasses.value?.forEach {
-                it.visible = true
+            val result = glassesReposiory.getGlasses()
+            viewModelState.update {
+                when (result) {
+                    is Result.Success<*> -> {
+                        val glasses = result.data as List<Glasses>
+                        Log.i("viewModelStateSUCCESS: ", glasses.size.toString())
+                        it.copy(eyeGlasses = glasses, isLoading = false)
+                    }
+                    is Result.Error -> {
+                        it.copy(isLoading = false, isError = true)
+                    }
+                }
+            }
+        }
+
+        viewModelScope.launch {
+            glassesReposiory.observeEyeglasses().collect { favorites ->
+                viewModelState.update { it.copy(eyeGlasses = favorites) }
+            }
+            glassesReposiory.observeFavorites().collect { fav ->
+                viewModelState.update { it.copy(favoriteCount = fav) }
             }
         }
     }
 
     fun update(glassStyle: GlassStyle) {
         viewModelScope.launch {
-            _eyeGlasses.value?.forEach { glass ->
-                val style = glass.styles.find { style -> style.name == glassStyle.name }
-                if (style != null) {
-                    style.isFavorite = glassStyle.isFavorite
-                }
+            glassesReposiory.updateGlass(glassStyle)
+            viewModelState.update {
+                val newFavCount = glassesReposiory.getFavoirteCount()
+                it.copy(favoriteCount = newFavCount)
             }
         }
-        _favoritesCount.value = getFavoritesCount()
     }
 
-    fun updateCount() {
-        _favoritesCount.value = getFavoritesCount()
-    }
-
-    private fun getFavoritesCount(): Int {
+    fun getFavoritesCount(): Int {
         val favPredicate: (GlassStyle) -> Boolean = { it.isFavorite }
         var favCount = 0
-        _eyeGlasses.value?.forEach { glass ->
+        uiState.value.eyeGlasses.forEach { glass ->
             favCount += glass.styles.count(favPredicate)
         }
-        Log.i("favStateCount ", favCount.toString())
         return favCount
     }
 
     fun search(term: String) {
-        if(term.isNullOrBlank()) {
-            _eyeGlasses.value = AllGlasses.toMutableStateList()
-        } else {
-            val results =  AllGlasses.filter { it.brand.contains(term, ignoreCase = true) }.toMutableStateList()
-            _eyeGlasses.value = results
+        viewModelScope.launch {
+            glassesReposiory.searchGlass(term)
         }
     }
 
-    override fun onCleared() {
-        _eyeGlasses.value?.forEach {
-            it.visible = false
+    /**
+     * Factory for HomeViewModel that takes PostsRepository as a dependency
+     */
+    companion object {
+        fun provideFactory(
+            glassesRepository: GlassesRepository,
+        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return EyeGlassesViewModel(glassesRepository) as T
+            }
         }
-        _uiState.value = EyeGlassesUiState.Loading
-        super.onCleared()
     }
-}
-
-sealed class EyeGlassesUiState {
-    object Loading : EyeGlassesUiState()
-    object Failure : EyeGlassesUiState()
-    object Success : EyeGlassesUiState()
 }

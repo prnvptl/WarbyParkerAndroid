@@ -12,6 +12,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.warbyparkerandroid.di.AppContainer
 import com.example.warbyparkerandroid.ui.account.Account
 import com.example.warbyparkerandroid.ui.bottomnavigation.Route
 import com.example.warbyparkerandroid.ui.bottomnavigation.Screens
@@ -25,9 +26,11 @@ import com.example.warbyparkerandroid.ui.shop.HomeScreen
 import com.example.warbyparkerandroid.ui.theme.WarbyParkerAndroidTheme
 
 @Composable
-fun RootScreen() {
+fun RootScreen(appContainer: AppContainer) {
     val navController = rememberNavController()
-    val viewModel: EyeGlassesViewModel = viewModel()
+    val viewModel: EyeGlassesViewModel = viewModel(
+        factory = EyeGlassesViewModel.provideFactory(appContainer.glassesRepository)
+    )
     WarbyParkerAndroidTheme {
         var showBottomBar by remember { mutableStateOf(true) }
         CompositionLocalProvider(LocalElevationOverlay provides null) {
@@ -48,7 +51,6 @@ fun RootScreen() {
                 ) {
                     composable(Screens.Shop.route) {
                         showBottomBar = true
-//                        Contacts()
                         HomeScreen(onEyeglassesShopClick = {
                             navController.navigate(
                                 Route.EYEGLASSES.name
