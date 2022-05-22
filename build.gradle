@@ -4,9 +4,13 @@ buildscript {
         system_ui_cont_version = '0.24.7-alpha'
         navigation_compose_version = '2.4.0-beta02'
         version_lifecycle = "2.4.0-rc01"
+        version_hilt = "2.42"
+        version_hilt_lifecycle = "1.0.0-alpha03"
+        version_sceneform = "1.20.5"
     }
     dependencies {
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21'
+        classpath "com.google.dagger:hilt-android-gradle-plugin:$version_hilt"
     }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {

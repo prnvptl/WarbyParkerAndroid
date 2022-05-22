@@ -33,7 +33,7 @@ class AugmentedFaceActivity : AppCompatActivity() {
     private var faceModel: ModelRenderable? = null
     private val facesNodes = HashMap<AugmentedFace, AugmentedFaceNode>()
     private var mViewBinding: ActivityAugmentedFaceBinding? = null
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mViewBinding = DataBindingUtil.setContentView<ActivityAugmentedFaceBinding>(

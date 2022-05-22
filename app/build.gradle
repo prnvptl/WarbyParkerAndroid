@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'org.jetbrains.kotlin.plugin.parcelize'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -75,11 +77,15 @@ dependencies {
 
     // View Model & Live Data
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$version_lifecycle")
-
     implementation("androidx.compose.runtime:runtime-livedata:1.1.1")
 
     // sceneform, AR, 3d
-    implementation "com.gorisse.thomas.sceneform:sceneform:1.20.5"
+    implementation "com.gorisse.thomas.sceneform:sceneform:$version_sceneform"
+
+    // Hilt
+    implementation "com.google.dagger:hilt-android:$version_hilt"
+    annotationProcessor "com.google.dagger:hilt-compiler:$version_hilt"
+    kapt "com.google.dagger:hilt-compiler:$version_hilt"
 
     implementation "androidx.appcompat:appcompat:1.4.1"
     implementation "androidx.fragment:fragment:1.4.1"

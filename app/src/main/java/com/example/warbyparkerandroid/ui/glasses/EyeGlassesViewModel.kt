@@ -1,17 +1,16 @@
 package com.example.warbyparkerandroid.ui.glasses
 
 import android.util.Log
-import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.warbyparkerandroid.data.datasource.AllGlasses
 import com.example.warbyparkerandroid.data.datasource.Result
 import com.example.warbyparkerandroid.data.model.GlassStyle
 import com.example.warbyparkerandroid.data.model.Glasses
-import com.example.warbyparkerandroid.data.repository.GlassesRepository
+import com.example.warbyparkerandroid.data.repository.GlassesRepositoryImpl
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * UI state for the Eyeglasses route.
@@ -61,8 +60,9 @@ private data class GlassesViewModelState(
         }
 }
 
-class EyeGlassesViewModel(
-    private val glassesReposiory: GlassesRepository
+@HiltViewModel
+class EyeGlassesViewModel @Inject constructor(
+    private val glassesReposiory: GlassesRepositoryImpl
 ) : ViewModel() {
     private val viewModelState = MutableStateFlow(GlassesViewModelState(isLoading = true))
 
@@ -122,20 +122,6 @@ class EyeGlassesViewModel(
     fun search(term: String) {
         viewModelScope.launch {
             glassesReposiory.searchGlass(term)
-        }
-    }
-
-    /**
-     * Factory for HomeViewModel that takes PostsRepository as a dependency
-     */
-    companion object {
-        fun provideFactory(
-            glassesRepository: GlassesRepository,
-        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return EyeGlassesViewModel(glassesRepository) as T
-            }
         }
     }
 }

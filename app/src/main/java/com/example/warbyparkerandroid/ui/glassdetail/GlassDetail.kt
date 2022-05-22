@@ -58,11 +58,7 @@ import kotlin.math.ceil
 fun GlassDetail(
     glass: Glasses,
     selectedStyle: GlassStyle,
-    viewModel: EyeGlassesViewModel = viewModel(
-        factory = EyeGlassesViewModel.provideFactory(
-            GlassesRepositoryImpl()
-        )
-    ),
+    viewModel: EyeGlassesViewModel = viewModel(),
     onNavBackPressed: () -> Unit
 ) {
     val context = LocalContext.current
