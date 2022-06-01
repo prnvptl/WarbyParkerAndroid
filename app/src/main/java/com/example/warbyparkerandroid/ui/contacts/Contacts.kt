@@ -96,6 +96,7 @@ fun Contacts(
                                 fontSize = 20.sp
                             )
                         },
+                        maxLines = 1,
                         trailingIcon = {
                             IconButton(onClick = { }) {
                                 Icon(
@@ -114,7 +115,7 @@ fun Contacts(
                                 )
                             }
                         },
-                        colors = TextFieldDefaults.textFieldColors(focusedIndicatorColor = Color.Transparent)
+                        colors = TextFieldDefaults.textFieldColors(focusedIndicatorColor = Color.Transparent),
                     )
                 }
             }
