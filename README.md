@@ -47,7 +47,7 @@ Demo
 
 ## App Architecture
 
-<img src="screenshots/mvvmarch.png" width="300" height="300"/>
+<img src="screenshots/mvvmarch.png" width="330" height="300"/>
 
 #### Separation of concerns
 - Business logic should not be intertwined with the UI code
