@@ -15,10 +15,17 @@ The purpose of this app to showcase:
 - Performing background task with Kotlin Coroutines
 
 ### Screens
-Home Tab             |  Search Tab | Notifications Tab
+#### Home
+Eyeglasses             |  Filter | Details
 :-------------------------:|:-------------------------: | :-------------------------: 
 <img src="art/screen1.png" width=240 />  |  <img src="art/screen2.png" width=240 /> | <img src="art/screen3.png" width=240 />
 
-Messages Tab             |  Side Navigation | Tweet Details
-:-------------------------:|:-------------------------: | :-------------------------: 
-<img src="art/screen4.png" width=240 />  |  <img src="art/screen5.png" width=240 /> | <img src="art/screen6.png" width=240 />
+
+Contacts             |  Favourites | Account 
+:-------------------------:|:-------------------------: | :-------------------------:
+<img src="art/screen4.png" width=240 />  |  <img src="art/screen5.png" width=240 /> |  <img src="art/screen5.png" width=240 /> |
+ 
+Login             |  Cart | 
+:-------------------------:|:-------------------------: |
+<img src="art/screen4.png" width=240 />  |  <img src="art/screen5.png" width=240 /> |
+
