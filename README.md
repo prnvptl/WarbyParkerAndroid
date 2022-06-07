@@ -15,7 +15,10 @@ The purpose of this app to showcase:
 - Performing background task with Kotlin Coroutines
 
 ### Screens
-#### Home
+Home            
+:-------------------------:
+<img src="art/screen1.png" width=240 />  |
+
 Eyeglasses             |  Filter | Details
 :-------------------------:|:-------------------------: | :-------------------------: 
 <img src="art/screen1.png" width=240 />  |  <img src="art/screen2.png" width=240 /> | <img src="art/screen3.png" width=240 />
