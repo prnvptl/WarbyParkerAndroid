@@ -45,6 +45,25 @@ Demo
 | 🌐 Networking        | [Retrofit](https://square.github.io/retrofit/)                        |
 | 📄 Parsing            | [KotlinX](https://kotlinlang.org/docs/serialization.html)                            |
 
+## App Architecture
+
+<img src="screenshots/mvvmarch.png" style="width:275"/>
+
+#### Separation of concerns
+- Business logic should not be intertwined with the UI code
+- UI-based classes should only contain logic that handles UI and operating system interactions
+
+#### Drive UI from a model
+- The (view) model is responsible for handling data for the UI
+- The (view) model should not be affected by the app's lifecycle and configuration changes
+
+
+#### Repository Pattern (https://martinfowler.com/eaaCatalog/repository.html)
+- Repositories to be mediators between different data sources
+-  A repository pattern approach will provide a clean API to retrieve data easily from single or multiple access points. (network, local storage, etc..)
+
+
+
 ## Languages, libraries and tools used
 
 - [Kotlin](https://kotlinlang.org/)
