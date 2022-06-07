@@ -18,18 +18,18 @@ The purpose of this app to showcase:
 ### Screens
 Home            
 :-------------------------:
-<img src="art/screen1.png" width=240 />  |
+<img src="screenshots/home.png" width=240 />  |
 
 Eyeglasses             |  Filter | Details
 :-------------------------:|:-------------------------: | :-------------------------: 
-<img src="art/screen1.png" width=240 />  |  <img src="art/screen2.png" width=240 /> | <img src="art/screen3.png" width=240 />
+<img src="screenshots/glasses.png" width=240 />  |  <img src="screenshots/filter.png" width=240 /> | <img src="screenshots/detail.png" width=240 />
 
 
 Contacts             |  Favourites | Account 
 :-------------------------:|:-------------------------: | :-------------------------:
-<img src="art/screen4.png" width=240 />  |  <img src="art/screen5.png" width=240 /> |  <img src="art/screen5.png" width=240 /> |
+<img src="screenshots/contacts.png" width=240 />  |  <img src="screenshots/favourites.png" width=240 /> |  <img src="screenshots/account.png" width=240 /> |
  
 Login             |  Cart | 
 :-------------------------:|:-------------------------: |
-<img src="art/screen4.png" width=240 />  |  <img src="art/screen5.png" width=240 /> |
+<img src="screenshots/login.png" width=240 />  |  <img src="screenshots/cart" width=240 /> |
 
