@@ -13,7 +13,7 @@ The purpose of this app to showcase:
 - Creation of proper components and Subcomponents using Dagger Android and their injection into Activity, Compose Views, View Models and Helper Classes
 - Performing background task with Kotlin Coroutines
 - Use Jetpack compose Animations!
-- Use CameraX and ARCore libraries to implement face augmented reality!
+- Use CameraX and ARCore libraries to implement **face augmented reality**!
 
 ### Demo
 
