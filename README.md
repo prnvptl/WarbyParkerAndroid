@@ -19,7 +19,7 @@ The purpose of this app to showcase:
 
 Home          | Eyeglasses     |  Filter |
 :-------------------------:| :-------------------------:|:-------------------------: 
-<img src="screenshots/home.png" width=260 />  | <img src="screenshots/glasses.png" width=240 />  |  <img src="screenshots/filter.png" width=240 />
+<img src="screenshots/home.png" width=300 />  | <img src="screenshots/glasses.png" width=240 />  |  <img src="screenshots/filter.png" width=240 />
 
 Details | Contacts             |  Favourites 
 :-------------------------:|:-------------------------:|:-------------------------: 
