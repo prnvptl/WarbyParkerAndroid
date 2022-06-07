@@ -619,7 +619,7 @@ fun HorizontalGlassScroller(glassImages: List<Int>, onPageSelected: (page: Int) 
         modifier = Modifier
             .fillMaxWidth()
             .height((configuration.screenHeightDp / 2.5).dp)
-            .background(Color.Blue)
+            .background(Color.Transparent)
     ) { page ->
         // Our page content
         Image(

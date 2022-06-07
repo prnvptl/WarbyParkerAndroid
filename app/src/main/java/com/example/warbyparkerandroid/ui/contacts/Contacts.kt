@@ -115,7 +115,7 @@ fun Contacts(
                                 )
                             }
                         },
-                        colors = TextFieldDefaults.textFieldColors(focusedIndicatorColor = Color.Transparent),
+                        colors = TextFieldDefaults.textFieldColors(focusedIndicatorColor = Color.Transparent, backgroundColor = Color.White),
                     )
                 }
             }
