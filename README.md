@@ -15,17 +15,19 @@ The purpose of this app to showcase:
 - Use Jetpack compose Animations!
 - Use CameraX and ARCore libraries to implement face augmented reality!
 
-### Screens
+### Demo
+
+<img src="screenshots/wb.gif" style="width:275"/>
 
 Home          | Eyeglasses     |  Filter |
 :-------------------------:| :-------------------------:|:-------------------------: 
-<img src="screenshots/home.png" width=300 />  | <img src="screenshots/glasses.png" width=300 />  |  <img src="screenshots/filter.png" width=300 />
+<img src="screenshots/home.png" width=275 />  | <img src="screenshots/glasses.png" width=275 />  |  <img src="screenshots/filter.png" width=275 />
 
 Details | Contacts             |  Favourites 
 :-------------------------:|:-------------------------:|:-------------------------: 
-<img src="screenshots/detail.png" width=300 /> | <img src="screenshots/contacts.png" width=300 />  |  <img src="screenshots/favourites.png" width=300 /> | /> 
+<img src="screenshots/detail.png" width=275 /> | <img src="screenshots/contacts.png" width=275 />  |  <img src="screenshots/favourites.png" width=275 /> | /> 
  
 Account  | Login             |  Cart | 
 :-------------------------:|:-------------------------:|:-------------------------:
- <img src="screenshots/account.png" width=300 />  | <img src="screenshots/login.png" width=300 />  |  <img src="screenshots/cart.png" width=300 /> |
+ <img src="screenshots/account.png" width=275 />  | <img src="screenshots/login.png" width=275 />  |  <img src="screenshots/cart.png" width=275 /> |
 
