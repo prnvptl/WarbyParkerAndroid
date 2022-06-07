@@ -47,7 +47,7 @@ Demo
 
 ## App Architecture
 
-<img src="screenshots/mvvmarch.png" width="100" height="100"/>
+<img src="screenshots/mvvmarch.png" width="300" height="300"/>
 
 #### Separation of concerns
 - Business logic should not be intertwined with the UI code
@@ -61,7 +61,6 @@ Demo
 #### Repository Pattern (https://martinfowler.com/eaaCatalog/repository.html)
 - Repositories to be mediators between different data sources
 -  A repository pattern approach will provide a clean API to retrieve data easily from single or multiple access points. (network, local storage, etc..)
-
 
 
 ## Languages, libraries and tools used
