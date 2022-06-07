@@ -17,7 +17,7 @@ The purpose of this app to showcase:
 
 ### Demo
 
-<img src="screenshots/wb.gif" style="width:275"/>
+<img src="screenshots/wb.gif" style="width:200"/>
 
 Home          | Eyeglasses     |  Filter |
 :-------------------------:| :-------------------------:|:-------------------------: 
