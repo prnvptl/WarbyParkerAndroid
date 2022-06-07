@@ -19,13 +19,13 @@ The purpose of this app to showcase:
 
 Home          | Eyeglasses     |  Filter |
 :-------------------------:| :-------------------------:|:-------------------------: 
-<img src="screenshots/home.png" width=300 />  | <img src="screenshots/glasses.png" width=240 />  |  <img src="screenshots/filter.png" width=240 />
+<img src="screenshots/home.png" width=300 />  | <img src="screenshots/glasses.png" width=300 />  |  <img src="screenshots/filter.png" width=300 />
 
 Details | Contacts             |  Favourites 
 :-------------------------:|:-------------------------:|:-------------------------: 
-<img src="screenshots/detail.png" width=240 /> | <img src="screenshots/contacts.png" width=240 />  |  <img src="screenshots/favourites.png" width=240 /> | /> 
+<img src="screenshots/detail.png" width=300 /> | <img src="screenshots/contacts.png" width=300 />  |  <img src="screenshots/favourites.png" width=300 /> | /> 
  
 Account  | Login             |  Cart | 
 :-------------------------:|:-------------------------:|:-------------------------:
- <img src="screenshots/account.png" width=240 />  | <img src="screenshots/login.png" width=240 />  |  <img src="screenshots/cart.png" width=240 /> |
+ <img src="screenshots/account.png" width=300 />  | <img src="screenshots/login.png" width=300 />  |  <img src="screenshots/cart.png" width=300 /> |
 

@@ -25,7 +25,7 @@ class GlassesRepositoryImpl(
     override suspend fun getGlasses(): Result<List<Glasses>> {
         return withContext(Dispatchers.IO) {
             try {
-                delay(3500)
+                delay(5000)
                 eyeGlasses.value = AllGlasses
                 Result.Success(eyeGlasses.value)
             } catch (ex: Exception) {
