@@ -31,4 +31,4 @@ Account  | Login             |  Cart |
 
 Demo
 :-------------------------:|
-<img src="screenshots/wb.gif" style="width:200"/>
+<img src="screenshots/wb.gif" style="width:200"/> |
