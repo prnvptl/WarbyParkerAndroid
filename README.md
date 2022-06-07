@@ -2,7 +2,7 @@
 
 A clone of Warby Parker app in Android built using Jetpack compose.
 
-**Note**: This project is only for learning purposes, I do not in anyway want to promote anything that breaks the laws/piracy etc.!
+**Disclaimer**: This project is only for my own learning purposes, I do not intend to break any laws and privacy terms in regards to the actual Warby parker app or company.
 
 This is a jetpack compose sample app written in Kotlin following clean architecture principles.
 
