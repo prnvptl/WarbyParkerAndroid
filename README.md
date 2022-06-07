@@ -31,5 +31,5 @@ Contacts             |  Favourites | Account
  
 Login             |  Cart | 
 :-------------------------:|:-------------------------: |
-<img src="screenshots/login.png" width=240 />  |  <img src="screenshots/cart" width=240 /> |
+<img src="screenshots/login.png" width=240 />  |  <img src="screenshots/cart.png" width=240 /> |
 
