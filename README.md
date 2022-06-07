@@ -32,3 +32,25 @@ Account  | Login             |  Cart |
 Demo
 :-------------------------:|
 <img src="screenshots/wb.gif" style="width:200"/> |
+
+## 🏗️️ Built with ❤️ using Jetpack Compose
+
+| What            | How                        |
+|----------------	|------------------------------	|
+| 🎭 User Interface (Android)   | [Jetpack Compose](https://developer.android.com/jetpack/compose)                |
+| 🏗 Architecture    | [MVVM](https://developer.android.com/topic/architecture#data-layer)                            |
+| 💉 DI (Android)                | [Hilt](https://developer.android.com/training/dependency-injection/hilt-android)                        |
+| 🌊 Async            | [Coroutines](https://kotlinlang.org/docs/coroutines-overview.html) + [Flow](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/)                |
+| 👨‍💻 Google SceneForm | [Sceneform](https://github.com/SceneView/sceneview-android)
+| 🌐 Networking        | [Retrofit](https://square.github.io/retrofit/)                        |
+| 📄 Parsing            | [KotlinX](https://kotlinlang.org/docs/serialization.html)                            |
+
+## Languages, libraries and tools used
+
+- [Kotlin](https://kotlinlang.org/)
+- AndroidX libraries
+- [Android Architecture Components](https://developer.android.com/topic/libraries/architecture)
+- [Android Data Binding](https://developer.android.com/topic/libraries/data-binding)
+- [Dagger 2](https://github.com/google/dagger)
+- [Retrofit](http://square.github.io/retrofit/)
+- [Kotlin Coroutines](https://developer.android.com/kotlin/coroutines)
