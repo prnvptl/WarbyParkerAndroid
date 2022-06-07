@@ -15,9 +15,7 @@ The purpose of this app to showcase:
 - Use Jetpack compose Animations!
 - Use CameraX and ARCore libraries to implement **face augmented reality**!
 
-### Demo
-
-<img src="screenshots/wb.gif" style="width:200"/>
+### Demo Screens
 
 Home          | Eyeglasses     |  Filter |
 :-------------------------:| :-------------------------:|:-------------------------: 
@@ -31,3 +29,6 @@ Account  | Login             |  Cart |
 :-------------------------:|:-------------------------:|:-------------------------:
  <img src="screenshots/account.png" width=275 />  | <img src="screenshots/login.png" width=275 />  |  <img src="screenshots/cart.png" width=275 /> |
 
+Demo
+:-------------------------:|
+<img src="screenshots/wb.gif" style="width:200"/>
