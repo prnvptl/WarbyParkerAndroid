@@ -1,6 +1,6 @@
 # Warby Parker - Android
 
-A clone of Warby Parker app in Android built using Jetpack compose.
+🌟 A clone of Warby Parker app in Android built using Jetpack compose. 🌟
 
 **Disclaimer**: This project is only for my own learning purposes, I do not intend to break any laws and privacy terms in regards to the actual Warby parker app or company.
 
