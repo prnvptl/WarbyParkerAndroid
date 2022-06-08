@@ -31,7 +31,7 @@ Account  | Login             |  Cart |
 
 Demo
 :-------------------------:|
-<img src="screenshots/wb.gif" style="width:200"/> |
+<img src="screenshots/virtual-try-on.gif" style="width:200"/> |
 
 ## 🏗️️ Built with ❤️ using Jetpack Compose
 
