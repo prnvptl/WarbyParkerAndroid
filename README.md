@@ -15,6 +15,18 @@ The purpose of this app to showcase:
 - Use Jetpack compose Animations!
 - Use CameraX and ARCore libraries to implement **face augmented reality**!
 
+## 🏗️️ Built with ❤️ using Jetpack Compose
+
+| What            | How                        |
+|----------------	|------------------------------	|
+| 🎭 User Interface (Android)   | [Jetpack Compose](https://developer.android.com/jetpack/compose)                |
+| 🏗 Architecture    | [MVVM](https://developer.android.com/topic/architecture#data-layer)                            |
+| 💉 DI (Android)                | [Hilt](https://developer.android.com/training/dependency-injection/hilt-android)                        |
+| 🌊 Async            | [Coroutines](https://kotlinlang.org/docs/coroutines-overview.html) + [Flow](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/)                |
+| 👨‍💻 Google SceneForm | [Sceneform](https://github.com/SceneView/sceneview-android)
+| 🌐 Networking        | [Retrofit](https://square.github.io/retrofit/)                        |
+| 📄 Parsing            | [KotlinX](https://kotlinlang.org/docs/serialization.html)                            |
+
 ### Demo Screens
 
 Demo 1 | Demo 2 | Virtual Try On!
@@ -32,18 +44,6 @@ Details | Contacts             |  Favourites
 Account  | Login             |  Cart | 
 :-------------------------:|:-------------------------:|:-------------------------:
  <img src="screenshots/account.png" width=275 />  | <img src="screenshots/login.png" width=275 />  |  <img src="screenshots/cart.png" width=275 /> |
-
-## 🏗️️ Built with ❤️ using Jetpack Compose
-
-| What            | How                        |
-|----------------	|------------------------------	|
-| 🎭 User Interface (Android)   | [Jetpack Compose](https://developer.android.com/jetpack/compose)                |
-| 🏗 Architecture    | [MVVM](https://developer.android.com/topic/architecture#data-layer)                            |
-| 💉 DI (Android)                | [Hilt](https://developer.android.com/training/dependency-injection/hilt-android)                        |
-| 🌊 Async            | [Coroutines](https://kotlinlang.org/docs/coroutines-overview.html) + [Flow](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/)                |
-| 👨‍💻 Google SceneForm | [Sceneform](https://github.com/SceneView/sceneview-android)
-| 🌐 Networking        | [Retrofit](https://square.github.io/retrofit/)                        |
-| 📄 Parsing            | [KotlinX](https://kotlinlang.org/docs/serialization.html)                            |
 
 ## App Architecture
 
