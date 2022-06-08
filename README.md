@@ -17,6 +17,10 @@ The purpose of this app to showcase:
 
 ### Demo Screens
 
+Demo 1 | Demo 2 | Virtual Try On!
+:-------------------------:|:-------------------------:|:-------------------------:|
+<img src="screenshots/wb1.gif" style="width:275"/> | <img src="screenshots/wb2.gif" style="width:275"/> | <img src="screenshots/virtual-try-on.gif" style="width:275"/> |
+
 Home          | Eyeglasses     |  Filter |
 :-------------------------:| :-------------------------:|:-------------------------: 
 <img src="screenshots/home.png" width=275 />  | <img src="screenshots/glasses.png" width=275 />  |  <img src="screenshots/filter.png" width=275 />
@@ -28,10 +32,6 @@ Details | Contacts             |  Favourites
 Account  | Login             |  Cart | 
 :-------------------------:|:-------------------------:|:-------------------------:
  <img src="screenshots/account.png" width=275 />  | <img src="screenshots/login.png" width=275 />  |  <img src="screenshots/cart.png" width=275 /> |
-
-Demo
-:-------------------------:|
-<img src="screenshots/virtual-try-on.gif" style="width:200"/> |
 
 ## 🏗️️ Built with ❤️ using Jetpack Compose
 
